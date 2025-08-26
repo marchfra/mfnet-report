@@ -364,3 +364,9 @@ Temporary Items
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,latex
+
+# Ignore files from Kapitza project
+Code/
+Files/code.tex
+Files/numerical.tex
+Files/problem.tex

@@ -1,0 +1,101 @@
+\documentclass{unitothesis}
+
+% \includeonly{Files/Part1/layer}
+
+\usepackage{chngcntr}
+\counterwithin*{section}{part}
+
+% \usepackage[super]{nth}
+
+% \usepackage{subcaption}
+
+% \usepackage{listings}
+
+% \definecolor{Blue}{rgb}{0.2,0.2,0.9}
+% \definecolor{Green}{rgb}{0,0.6,0}
+% \definecolor{Gray}{rgb}{0.5,0.5,0.5}
+% \definecolor{Purple}{rgb}{0.58,0,0.82}
+% \definecolor{background}{rgb}{0.98,0.98,0.95}
+
+% \lstdefinestyle{mystyle}{
+%     backgroundcolor=\color{background},
+%     commentstyle=\color{Green},
+%     keywordstyle=\color{Blue},
+%     numberstyle=\tiny\color{Gray},
+%     stringstyle=\color{Purple},
+%     basicstyle=\ttfamily\footnotesize,
+%     basewidth=5.2pt,
+%     breakatwhitespace=false,
+%     extendedchars=true,
+%     breaklines=true,
+%     captionpos=b,
+%     keepspaces=true,
+%     numbers=left,
+%     numbersep=5pt,
+%     showspaces=false,
+%     showstringspaces=false,
+%     showtabs=false,
+%     tabsize=4
+% }
+% \lstset{style=mystyle}
+
+% \newcommand{\up}[1]{\uparrow_{\vu{#1}}}
+% \newcommand{\down}[1]{\downarrow_{\vu{#1}}}
+% \renewcommand{\dag}[1]{#1^\dagger}
+
+\author{Francesco Marchisotti}
+\title{\centering\texttt{mfnet} -- A simple\\[0.5em] Machine Learning Library}
+\aayear{2024/2025}
+
+\begin{supervisors}
+   \supervisor{}{}{\sc Matteo Osella}
+\end{supervisors}
+
+\begin{document}
+
+\maketitlepage
+\thispagestyle{empty}
+\subsection*{\centering Abstract}
+This document presents \texttt{mfnet}, a simple machine learning library developed as a final project for the \href{https://fisica-sc.campusnet.unito.it/do/storicocorsi.pl/Show?_id=curx_2324}{Deep Learning course}. The key feature is the implementation of the backpropagation algorithm, enabling the training of neural networks through gradient descent.
+
+The library is then compared with PyTorch on two simple tasks: a regression (on the California Housing dataset) and a classification (on the MNIST dataset).
+\newpage
+
+{\hypersetup{linkcolor=black}\tableofcontents}
+% \newpage
+
+\include{Files/signal-flow}
+
+\include{Files/Part1/tensor}
+\include{Files/Part1/layer}
+% \include{Files/Part1/backprop}
+% \include{Files/Part1/loss}
+% \include{Files/Part1/nn-optim-data}
+% \include{Files/Part1/train}
+% \include{Files/Part1/train-utils}
+
+
+% \appendix
+
+% \newpage
+% \include{File/code}
+
+\end{document}
+
+% Part 1: mfnet implementation
+% \begin{enumerate}
+%     \item information flow in a NN
+%     \item basic data structure: Tensor
+%     \item layer: Linear and Activations
+%     \item Backprop
+%     \item losses: MSE an CE
+%     \item nn, optimizer
+%     \item train helper function
+%     \item trainutils?
+% \end{enumerate}
+
+% Part 2: comparison with pytorch
+% \begin{enumerate}
+%     \item Regression task
+%     \item Classification task
+% \end{enumerate}
