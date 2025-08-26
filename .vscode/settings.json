@@ -1,0 +1,25 @@
+{
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk split aux/pdf",
+      "tools": [
+        "latexmk-split"
+      ]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-split",
+      "command": "latexmk",
+      "args": [
+        "-pdf",
+        "-auxdir=aux",
+        "-outdir=.",
+        "%DOC%"
+      ]
+    }
+  ],
+  "workbench.colorCustomizations": {
+      "titleBar.activeBackground": "#007d3e7f"
+  }
+}
