@@ -1,0 +1,54 @@
+\section{Layer}
+
+In \texttt{mfnet}, a layer is a fundamental building block of the neural network. Each layer consists of a set of neurons, and it performs a specific transformation on the input data. The two main types of layers implemented in \texttt{mfnet} are Linear layers and Activation layers.
+
+% \begin{itemize}
+%     \item \textbf{Linear Layer:} This layer applies a linear transformation to the input data, represented by the equation $y = Ax + b$, where $A$ is the weight matrix, $x$ is the input vector, $b$ is the bias vector, and $y$ is the output vector.
+%     \item \textbf{Activation Layer:} This layer applies a non-linear activation function to the output of the linear layer. Common activation functions include ReLU (Rectified Linear Unit), Sigmoid, and Tanh.
+% \end{itemize}
+
+Layers are stacked together to form a complete neural network, with the output of one layer serving as the input to the next layer.  Each layer is responsible for maintaining its own parameters and computing gradients during the backpropagation process.
+
+Each of the layers in \texttt{mfnet} expects the input to be in the form of a matrix with shape $(n_{\text{features}} + 1, n_{\text{samples}})$, where $n_{\text{features}}$ is the number of input features and $n_{\text{samples}}$ is the number of input samples. The first row of this matrix is reserved for a bias term, which is always set to 1.
+
+\subsection{Linear Layer}
+\subsubsection{Forward pass}
+The Linear layer in \texttt{mfnet} applies a linear transformation to the input data, performing a change in dimensionality from $n_{\text{in\_features}}$ to $n_{\text{out\_features}}$. Mathematically, this can be represented as:
+\begin{equation}
+    y = b + Wx
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $x$ is the $(n_{\text{in\_features}}, 1)$ input vector,
+    \item $W$ is the $(n_{\text{out\_features}}, n_{\text{in\_features}})$ weight matrix,
+    \item $b$ is the $(n_{\text{out\_features}}, 1)$ bias vector, and
+    \item $y$ is the $(n_{\text{out\_features}}, 1)$ output vector.
+\end{itemize}
+
+\paragraph{Implementation Details} The actual implementation is a bit different: the first key difference is that the bias term is absorbed inside the weights matrix, and the input vector is augmented with an additional constant value of 1. The layer expects this ``bias feature'' to be already present in the input data, and propagates it to the next layer by adding a row of $\begin{pmatrix}1 & 0 \cdots 0\end{pmatrix}$ to the weights matrix. This allows us to rewrite the equation as:
+\begin{equation}
+    \begin{pmatrix} 1 \\ y \end{pmatrix} = \begin{pmatrix} 1 & 0 \cdots 0 \\ b & W \end{pmatrix} \begin{pmatrix} 1 \\ x \end{pmatrix}
+\end{equation}
+
+The second key difference is that, instead of feeding one data point at a time to the network and heavily relying on inefficient for loops, we can feed a batch of data points at once, and leverage efficient matrix operations. This means that the input $x$ is actually a matrix $X$ where each column represents a different data point, and the output $y$ is also a matrix $Y$ where each column corresponds to the output for each input data point. The equation then becomes:
+\begin{equation}
+    \begin{pmatrix} 1 \cdots 1 \\ Y \end{pmatrix} = \begin{pmatrix} 1 & 0 \cdots 0 \\ b & W \end{pmatrix} \begin{pmatrix} 1 \cdots 1 \\ X \end{pmatrix}
+\end{equation}
+
+Switching to standard backpropagation notation, we can summarize the forward pass of a Linear layer as:
+\begin{equation}
+    Z^{[l]} = W^{[l]} A^{[l - 1]}
+\end{equation}
+where:
+\begin{itemize}
+    \item $A^{[l - 1]}$ is the input of the Linear layer $l$, with $A^{[0]}$ being the input data (shape $(n_{\text{features}} + 1, n_{\text{samples}})$),
+    \item $W^{[l]}$ is the weights matrix of the Linear layer $l$ (shape $(n_{\text{out\_features}} + 1,\\ n_{\text{in\_features}} + 1)$), and
+    \item $Z^{[l]}$ is the output of the Linear layer $l$ (shape $(n_{\text{out\_features}} + 1, n_{\text{samples}})$).
+\end{itemize}
+All these Tensors already include all the necessary additions to correctly handle the bias.
+
+The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in the backward pass.
+
+\subsubsection{Backward pass}
+The Linear layer's responsibility is to compute the gradients of the loss with respect to its weights during the backward pass.
