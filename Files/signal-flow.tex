@@ -5,7 +5,35 @@ A Feedforward Fully Connected Neural Network (FCNN) is a Neural Network architec
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\linewidth]{Images/fcnn.png}
+    % NEURAL NETWORK with coefficients, arrows
+    \begin{tikzpicture}[x=2.2cm,y=1.4cm]
+    \readlist\Nnod{4,5,5,5,3} % array of number of nodes per layer
+
+    \foreachitem \N \in \Nnod{ % loop over layers
+        \edef\curr{\Ncnt} % alias of index of current layer
+        \pgfmathsetmacro\prev{int(\Ncnt-1)} % number of previous layer
+        \foreach \i [evaluate={\y=\N/2-\i; \x=\curr; \n=\nstyle;}] in {1,...,\N}{ % loop over nodes
+
+        % NODES
+        \node[node \n] (N\curr-\i) at (\x,\y) {};
+
+        % CONNECTIONS
+        \ifnum\curr>1 % connect to previous layer
+            \foreach \j in {1,...,\Nnod[\prev]}{ % loop over nodes in previous layer
+                \draw[connect arrow] (N\prev-\j) -- (N\curr-\i); % connect arrows directly
+            }
+        \fi
+
+        }
+
+    }
+
+    % LABELS
+    \node[above=0.3,align=center,mygreen!60!black] at (N1-1.90) {input\\[-0.2em]layer};
+    \node[above=0.1,align=center,myblue!60!black] at (N3-1.90) {hidden layers};
+    \node[above=0.8,align=center,myred!60!black] at (N\Nnodlen-1.90) {output\\[-0.2em]layer};
+
+    \end{tikzpicture}
     \caption{A Feedforward Fully Connected Neural Network (FCNN).}
     \label{fig:fcnn}
 \end{figure}
