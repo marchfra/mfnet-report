@@ -1,6 +1,9 @@
 \documentclass{unitothesis}
 
-% \includeonly{Files/Part1/layer}
+% \includeonly{Files/Part1/backprop}
+
+\usepackage{array} % Add this in your preamble if not already present
+\usepackage{multicol} % Add to preamble
 
 \usepackage{amsmath} % for aligned
 \usepackage{listofitems} % for \readlist to create arrays
@@ -37,6 +40,8 @@
 
 \usepackage{chngcntr}
 \counterwithin*{section}{part}
+
+\newcommand{\J}{\mathcal{J}}
 
 % \usepackage[super]{nth}
 
@@ -100,8 +105,8 @@ The library is then compared with PyTorch on two simple tasks: a regression (on 
 \include{Files/signal-flow}
 
 \include{Files/Part1/tensor}
+\include{Files/Part1/backprop}
 \include{Files/Part1/layer}
-% \include{Files/Part1/backprop}
 % \include{Files/Part1/loss}
 % \include{Files/Part1/nn-optim-data}
 % \include{Files/Part1/train}

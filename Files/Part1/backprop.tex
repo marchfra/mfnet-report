@@ -1,0 +1,63 @@
+\section{Backpropagation}
+Before diving into the details of the implementation of \texttt{mfnet}, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
+
+The algorithm is more easily understandable using the indices notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
+
+We define $m$ to be the number of samples, $n^{[l]}$ the number of neurons in layer $l$, $a_j^{[l]}$ the activation of neuron $j$ in layer $l$ (with $a_1^{[l]} = 1$), and $W_{jk}^{[l]}$ the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$ and $W_{1k}^{[l]} = \delta_{1k}$).
+
+The goal of the backpropagation algorithm is to compute the derivative of the loss with respect to each weight in the network using the chain rule.
+
+\paragraph{Indices notation}
+The flow of information through layer $l$ is given by:
+\begin{gather*}
+    z_j^{[l]} = \sum_{k=1}^{n^{[l-1]}} W_{jk}^{[l]} a_k^{[l-1]} \\
+    a_j^{[l]} = g\left(z_j^{[l]}\right)
+\end{gather*}
+
+The derivative of the loss $\J$ with respect to the weights $W_{jk}^{[l]}$ is computed as:
+\begin{align*}
+    \pdv{\J}{W_{jk}^{[l]}} &= \pdv{\J}{z_j^{[l]}} \pdv{z_j^{[l]}}{W_{jk}^{[l]}}\\
+    &= \Delta_j^{[l]} \pdv{z_j^{[l]}}{W_{jk}^{[l]}} = \Delta_j^{[l]} a_k^{[l-1]}
+\end{align*}
+
+Now, $\Delta_j^{[l]}$ can be expressed in function of $\Delta_j^{[l + 1]}$:
+\begin{align*}
+    \Delta_j^{[l]} = \pdv{\J}{z_j^{[l]}} &= \pdv{\J}{a_j^{[l]}} \pdv{a_j^{[l]}}{z_j^{[l]}}\\
+    &= \left( \sum_{i=1}^{n^{[l + 1]}} \pdv{\J}{z_i^{[l+1]}} \pdv{z_i^{[l+1]}}{a_j^{[l]}} \right) \pdv{a_j^{[l]}}{z_j^{[l]}}\\
+    &= \left( \sum_{i=1}^{n^{[l + 1]}} \Delta_i^{[l+1]} W_{ij}^{[l+1]} \right) g'\left(z_j^{[l]}\right)
+\end{align*}
+
+The procedure can be iterated until the last layer $L$ is reached:
+\begin{align*}
+    \Delta_j^{[L]} = \pdv{\J}{z_j^{[L]}} = \pdv{\J}{a_j^{[L]}} \pdv{a_j^{[L]}}{z_j^{[L]}} = \pdv{\J}{\hat{y_j}} f'\left(z_j^{[L]}\right)
+\end{align*}
+
+This last term can be computed after the forward pass is completed. By iteration, every $\Delta_j^{[l]}$ can be computed, and thus every $\pdv{\J}{W_{jk}^{[l]}}$.
+
+\paragraph{Matrix notation} Matrix notation can be easily derived from the indices notation, being careful with the order of the products and with placing the transposed.
+
+The flow of information through layer $l$ is given by:
+\begin{gather*}
+    Z^{[l]} = W^{[l]} A^{[l-1]}\\
+    A^{[l]} = g\left(Z^{[l]}\right)
+\end{gather*}
+
+The derivative of the loss $\J$ with respect to the weights $W^{[l]}$ is computed as:
+\begin{equation*}
+    \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} \pdv{Z^{[l]}}{W^{[l]}} = \Delta^{[l]} A^{[l-1]T}
+\end{equation*}
+
+Now, $\Delta^{[l]}$ can be expressed in function of $\Delta^{[l + 1]}$:
+\begin{align*}
+    \Delta^{[l]} = \pdv{\J}{Z^{[l]}} &= \pdv{\J}{A^{[l]}} \odot \pdv{A^{[l]}}{Z^{[l]}}\\
+    &= \left(\pdv{Z^{[l+1]}}{A^{[l]}} \pdv{\J}{Z^{[l+1]}} \right) \odot \pdv{A^{[l]}}{Z^{[l]}}\\
+    &= \left(W^{[l+1]T} \Delta^{[l+1]} \right) \odot g'\left(Z^{[l]}\right)
+\end{align*}
+where $\odot$ denotes the element-wise (Hadamard) product.
+
+The procedure can be iterated until the last layer $L$ is reached:
+\begin{align*}
+    \Delta^{[L]} = \pdv{\J}{Z^{[L]}} = \pdv{\J}{A^{[L]}} \odot \pdv{A^{[L]}}{Z^{[L]}} = \pdv{\J}{\hat{Y}} \odot f'\left(Z^{[L]}\right)
+\end{align*}
+
+This last term can be computed after the forward pass is completed. By iteration, every $\Delta^{[l]}$ can be computed, and thus every $\pdv{\J}{W^{[l]}}$.
