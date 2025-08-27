@@ -1,9 +1,11 @@
-\section{Backpropagation}
+\section{Backpropagation} \label{sec:backprop}
 Before diving into the details of the implementation of \texttt{mfnet}, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
 
 The algorithm is more easily understandable using the indices notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
 
+{\color{red}
 We define $m$ to be the number of samples, $n^{[l]}$ the number of neurons in layer $l$, $a_j^{[l]}$ the activation of neuron $j$ in layer $l$ (with $a_1^{[l]} = 1$), and $W_{jk}^{[l]}$ the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$ and $W_{1k}^{[l]} = \delta_{1k}$).
+}
 
 The goal of the backpropagation algorithm is to compute the derivative of the loss with respect to each weight in the network using the chain rule.
 
