@@ -1,0 +1,18 @@
+\section{Loss}
+The final ingredient in the training of a neural network is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
+
+Also, as seen in Section \ref{sec:backprop}, the derivative of the loss with respect to the output of the network is needed to start the backpropagation process.
+
+\texttt{mfnet} implements two of the most important loss functions: Mean Squared Error (MSE), used mainly in regression tasks, and Cross Entropy (CE), used in classification tasks.
+
+\subsection{Mean Squared Error (MSE)}
+The Mean Squared Error loss function is defined as:
+\begin{equation}
+    \J(\hat{y}, y) = \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{y}_i - y_i}^2 = \frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{n_\text{feat}} (\hat{y}_{ij} - y_{ij})^2
+\end{equation}
+where $\hat{y}_i$ is the vector of predicted values for the $i$-th sample, $y_i$ is the vector of true target values for the $i$-th sample and $m$ is the number of samples. It represents the square modulus of the error vector, averaged over all samples.
+
+The gradient matrix of the loss with respect to the output of the network is given by:
+\begin{equation}
+    \pdv{\J}{\hat{y}} = \frac{2}{m} (\hat{y} - y)
+\end{equation}
