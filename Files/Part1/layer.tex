@@ -53,15 +53,15 @@ The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in t
 \subsubsection{Backward pass}
 The Linear layer's responsibility is to compute the gradients of the loss with respect to its weights during the backward pass. Mathematically, this can be expressed as:
 \begin{equation}
-    \pdv{\mathcal{J}}{W^{[l]}} = \pdv{\mathcal{J}}{Z^{[l]}} A^{[l - 1]T} = \Delta^{[l]} A^{[l - 1]T}
+    \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} A^{[l - 1]T} = \Delta^{[l]} A^{[l - 1]T}
 \end{equation}
-where $\mathcal{J}$ is the loss and $\Delta^{[l]} = \pdv{\mathcal{J}}{Z^{[l]}}$ is the gradient of the loss with respect to the output of the Linear layer $l$.
+where $\J$ is the loss and $\Delta^{[l]} = \pdv{\J}{Z^{[l]}}$ is the gradient of the loss with respect to the output of the Linear layer $l$.
 
 \paragraph{Implementation Details} The backward method of the Linear layer takes as input $\Delta^{[l]}$ and computes the gradient with respect to the weights $W^{[l]}$. This gradient is then stored in the layer for later use during the optimization step, when it will be used to update the weights.
 
 The Linear layer needs to pass backward its contribution to the gradient of the loss with respect to its input $A^{[l - 1]}$. This is computed as:
 \begin{equation}
-    \pdv{\mathcal{J}}{A^{[l - 1]}} = W^{[l]T} \Delta^{[l]}
+    \pdv{\J}{A^{[l - 1]}} = W^{[l]T} \Delta^{[l]}
 \end{equation}
 
 \subsection{Activation Layer}
@@ -86,11 +86,11 @@ Only two types of activation functions are implemented in \texttt{mfnet}, ReLU a
 \subsubsection{Backward pass}
 Since the Activation layer does not have any learnable parameters, its backward method is solely responsible for computing the gradient of the loss with respect to its input $Z^{[l]}$:
 \begin{equation}
-    \pdv{\mathcal{J}}{Z^{[l]}} = \pdv{\mathcal{J}}{A^{[l]}} \odot g'(Z^{[l]})
+    \pdv{\J}{Z^{[l]}} = \pdv{\J}{A^{[l]}} \odot g'(Z^{[l]})
 \end{equation}
 where $g'$ is the derivative of the activation function and $\odot$ denotes element-wise multiplication (Hadamard product).
 
-\paragraph{Implementation Details} The backward method of the Activation layer takes as input $\pdv{\mathcal{J}}{A^{[l]}}$ and computes $\pdv{\mathcal{J}}{Z^{[l]}}$. Similar to the forward pass, the bias feature must be preserved during this computation. Therefore, the derivative of the activation function is applied only to the rows corresponding to actual features, setting the first row (the bias feature) to zero. This ensures that the first row of the weight matrix of the previous Linear layer does not get updated during the optimization step, and therefore that the bias feature gets correctly propagated forward through the network.
+\paragraph{Implementation Details} The backward method of the Activation layer takes as input $\pdv{\J}{A^{[l]}}$ and computes $\pdv{\J}{Z^{[l]}}$. Similar to the forward pass, the bias feature must be preserved during this computation. Therefore, the derivative of the activation function is applied only to the rows corresponding to actual features, setting the first row (the bias feature) to zero. This ensures that the first row of the weight matrix of the previous Linear layer does not get updated during the optimization step, and therefore that the bias feature gets correctly propagated forward through the network.
 
 \subsection{Example}
 To better understand the workings of the layers, it's helpful to consider a practical example: we'll walk through a forward/backward cycle of a small network with two hidden layers and all the activation functions set to the identity.
@@ -123,7 +123,7 @@ To better understand the workings of the layers, it's helpful to consider a prac
             }
         }
     \end{tikzpicture}
-    \caption{A small neural network with two hidden layers. The first layer is a Linear layer with 3 input features (plus bias) and 4 output features (plus bias). The second layer is a Linear layer with 4 input features (plus bias) and 3 output features (plus bias). The third layer is a Linear layer with 3 input features (plus bias) and 2 output features (plus bias). All activation functions are set to the identity.}
+    \caption{A small neural network with two hidden layers. The first layer is a Linear layer with 2 input features (plus bias) and 3 output features (plus bias). The second layer is a Linear layer with 3 input features (plus bias) and 2 output features (plus bias). The third layer is a Linear layer with 2 input features (plus bias) and 1 output feature (plus bias). All activation functions are set to the identity.}
     \label{fig:small-nn}
 \end{figure}
 
@@ -239,23 +239,26 @@ The first step is to prepend the bias feature to the input and to the output:
 
 Now we compute the loss:
 \begin{align*}
-    \mathcal{J}(\hat{Y}, \tilde{Y}) = \frac{1}{2m} \sum_{i=1}^{m} (\hat{Y}_i - \tilde{Y}_i)^2 = \frac{1}{8} \left[\right.&(1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + \\
-        &(2-1)^2 + (0-1)^2 + (3-2)^2 + (1-2)^2\left.\right] = 0.5
+    \J(\hat{Y}, \tilde{Y}) &= \frac{1}{2m} \sum_{i=1}^{m} (\hat{Y}_i - \tilde{Y}_i)^2\\
+    &\;\begin{aligned}
+        = \frac{1}{8} \left[\right.&(1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + \\
+        &(2 - 1)^2 + (0 - 1)^2 + (3 - 2)^2 + (1 - 2)^2\left.\right] = 0.5
+    \end{aligned}
 \end{align*}
 
 \subsubsection{Backward pass}
 To start the backward pass, we need to compute the gradient of the loss with respect to the output of the network:
 \begin{equation*}
-    \frac{\partial \mathcal{J}}{\partial \hat{Y}} = \frac{1}{m} \left(\hat{Y} - \tilde{Y}\right) = \frac{1}{4} \mqty[
+    \frac{\partial \J}{\partial \hat{Y}} = \frac{1}{m} \left(\hat{Y} - \tilde{Y}\right) = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         1 & -1 & 1 & -1
-    ] = \pdv{\mathcal{J}}{A^{[3]}}
+    ] = \pdv{\J}{A^{[3]}}
 \end{equation*}
 This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 3 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[3]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
-    \Delta^{[3]} = \pdv{\mathcal{J}}{Z^{[3]}} = \pdv{\mathcal{J}}{A^{[3]}} \odot \mqty[
+    \Delta^{[3]} = \pdv{\J}{Z^{[3]}} = \pdv{\J}{A^{[3]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
         g'(Z^{[3]}[1\hspace{-0.6ex}:])
     ] = \frac{1}{4} \mqty[
@@ -266,11 +269,11 @@ This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 3 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[3]}$ and its input $A^{[2]}$:
 \begin{gather*}
-    \pdv{\mathcal{J}}{W^{[3]}} = \Delta^{[3]} A^{[2]T} = \frac{1}{4} \mqty[
+    \pdv{\J}{W^{[3]}} = \Delta^{[3]} A^{[2]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         0 & -2 & -6
     ]\\
-    \pdv{\mathcal{J}}{A^{[2]}} = W^{[3]T} \Delta^{[3]} = \frac{1}{4} \mqty[
+    \pdv{\J}{A^{[2]}} = W^{[3]T} \Delta^{[3]} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         1 & -1 & 1 & -1 \\
         -1 & 1 & -1 & 1
@@ -279,7 +282,7 @@ This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 2 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[2]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
-    \Delta^{[2]} = \pdv{\mathcal{J}}{Z^{[2]}} = \pdv{\mathcal{J}}{A^{[2]}} \odot \mqty[
+    \Delta^{[2]} = \pdv{\J}{Z^{[2]}} = \pdv{\J}{A^{[2]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
         g'(Z^{[2]}[1\hspace{-0.6ex}:])
     ] = \frac{1}{4} \mqty[
@@ -291,12 +294,12 @@ This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 2 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[2]}$ and its input $A^{[1]}$:
 \begin{gather*}
-    \pdv{\mathcal{J}}{W^{[2]}} = \Delta^{[2]} A^{[1]T} = \frac{1}{4} \mqty[
+    \pdv{\J}{W^{[2]}} = \Delta^{[2]} A^{[1]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         0 & -2 & -2 & 0 \\
         0 & 2 & 2 & 0 \\
     ]\\
-    \pdv{\mathcal{J}}{A^{[1]}} = W^{[2]T} \Delta^{[2]} = \frac{1}{4} \mqty[
+    \pdv{\J}{A^{[1]}} = W^{[2]T} \Delta^{[2]} = \frac{1}{4} \mqty[
         \color{red} 2 & \color{red} -2 & \color{red} 2 & \color{red} -2 \\
         0 & 0 & 0 & 0 \\
         -2 & 2 & -2 & 2 \\
@@ -306,7 +309,7 @@ This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 1 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[1]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
-    \Delta^{[1]} = \pdv{\mathcal{J}}{Z^{[1]}} = \pdv{\mathcal{J}}{A^{[1]}} \odot \mqty[
+    \Delta^{[1]} = \pdv{\J}{Z^{[1]}} = \pdv{\J}{A^{[1]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
         g'(Z^{[1]}[1\hspace{-0.6ex}:])
     ] = \frac{1}{4} \mqty[
@@ -319,17 +322,67 @@ This is now the input of the backward method of the last layer.
 
 \paragraph{Layer 1 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[1]}$ and its input $A^{[0]}$:
 \begin{gather*}
-    \pdv{\mathcal{J}}{W^{[1]}} = \Delta^{[1]} A^{[0]T} = \frac{1}{4} \mqty[
+    \pdv{\J}{W^{[1]}} = \Delta^{[1]} A^{[0]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         0 & 0 & 0 \\
         0 & 0 & 4 \\
         0 & 0 & -6
     ]\\
-    \pdv{\mathcal{J}}{A^{[0]}} = W^{[1]T} \Delta^{[1]} = \frac{1}{4} \mqty[
+    \pdv{\J}{A^{[0]}} = W^{[1]T} \Delta^{[1]} = \frac{1}{4} \mqty[
         \color{red} 3 & \color{red} -3 & \color{red} 3 & \color{red} -3 \\
         1 & -1 & 1 & -1 \\
         -2 & 2 & -2 & 2
     ] \quad \text{(unused)}
 \end{gather*}
 
-{\color{red} Now write optimizer step and you're done with the example.}
+\subsubsection{Weight update}
+
+The weights are updated using gradient descent:
+\begin{equation*}
+    W^{[l]} \gets W^{[l]} - \eta \pdv{\J}{W^{[l]}} \\
+\end{equation*}
+
+Setting the learning rate $\eta = 4$ for simplicity\footnote{This value is way too high to have any chance of yielding an improvement in the predictions in any practical example}, we have: 
+\begin{gather*}
+    W^{[3]} \gets \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 \\
+        0 & 1 & -1
+    ] - \mqty[
+        \color{red} 0 & \color{red} 0 & \color{red} 0 \\
+        0 & -2 & -6
+    ] = \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 \\
+        0 & 3 & 5
+    ]\\
+    W^{[2]} \gets \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 & \color{red} 0\\
+        1 & 1 & 0 & 1\\
+        -1 & 1 & 2 & -2
+    ] - \mqty[
+        \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
+        0 & -2 & -2 & 0 \\
+        0 & 2 & 2 & 0 \\
+    ] = \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 & \color{red} 0\\
+        1 & 3 & 2 & 1\\
+        -1 & -1 & 0 & -2
+    ]\\
+    W^{[1]} \gets \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 \\
+        0 & 0 & 1 \\
+        0 & 1 & 1 \\
+        1 & 0 & 0
+    ] - \mqty[
+        \color{red} 0 & \color{red} 0 & \color{red} 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 4 \\
+        0 & 0 & -6
+    ] = \mqty[
+        \color{red} 1 & \color{red} 0 & \color{red} 0 \\
+        0 & 0 & 1 \\
+        0 & 1 & -3 \\
+        1 & 0 & 6
+    ]
+\end{gather*}
+
+Now a new cycle of forward pass/backward pass/weight update can begin.
