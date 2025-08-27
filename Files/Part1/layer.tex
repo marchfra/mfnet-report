@@ -239,17 +239,17 @@ The first step is to prepend the bias feature to the input and to the output:
 
 Now we compute the loss:
 \begin{align*}
-    \J(\hat{Y}, \tilde{Y}) &= \frac{1}{2m} \sum_{i=1}^{m} (\hat{Y}_i - \tilde{Y}_i)^2\\
+    \J(\hat{Y}, \tilde{Y}) &= \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{Y}_i - \tilde{Y}_i}^2\\
     &\;\begin{aligned}
-        = \frac{1}{8} \left[\right.&(1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + \\
-        &(2 - 1)^2 + (0 - 1)^2 + (3 - 2)^2 + (1 - 2)^2\left.\right] = 0.5
+        = \frac{1}{4} \left[\right.&(1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + (1 - 1)^2 + \\
+        &(2 - 1)^2 + (0 - 1)^2 + (3 - 2)^2 + (1 - 2)^2\left.\right] = 1
     \end{aligned}
 \end{align*}
 
 \subsubsection{Backward pass}
 To start the backward pass, we need to compute the gradient of the loss with respect to the output of the network:
 \begin{equation*}
-    \frac{\partial \J}{\partial \hat{Y}} = \frac{1}{m} \left(\hat{Y} - \tilde{Y}\right) = \frac{1}{4} \mqty[
+    \frac{\partial \J}{\partial \hat{Y}} = \frac{2}{m} \left(\hat{Y} - \tilde{Y}\right) = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
         1 & -1 & 1 & -1
     ] = \pdv{\J}{A^{[3]}}
@@ -342,7 +342,7 @@ The weights are updated using gradient descent:
     W^{[l]} \gets W^{[l]} - \eta \pdv{\J}{W^{[l]}} \\
 \end{equation*}
 
-Setting the learning rate $\eta = 4$ for simplicity\footnote{This value is way too high to have any chance of yielding an improvement in the predictions in any practical example}, we have: 
+Setting the learning rate $\eta = 4$ for simplicity\footnote{This value is way too high to have any chance of yielding an improvement in the predictions in any practical example.}, we have: 
 \begin{gather*}
     W^{[3]} \gets \mqty[
         \color{red} 1 & \color{red} 0 & \color{red} 0 \\
