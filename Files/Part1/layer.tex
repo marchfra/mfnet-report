@@ -1,6 +1,6 @@
 \section{Layer}
 
-In \texttt{mfnet}, a layer is a fundamental building block of the neural network. Each layer consists of a set of neurons, and it performs a specific transformation on the input data. The two main types of layers implemented in \texttt{mfnet} are Linear layers and Activation layers.
+In \mfnet, a layer is a fundamental building block of the neural network. Each layer consists of a set of neurons, and it performs a specific transformation on the input data. The two main types of layers implemented in \mfnet are Linear layers and Activation layers.
 
 % \begin{itemize}
 %     \item \textbf{Linear Layer:} This layer applies a linear transformation to the input data, represented by the equation $y = Ax + b$, where $A$ is the weight matrix, $x$ is the input vector, $b$ is the bias vector, and $y$ is the output vector.
@@ -9,21 +9,21 @@ In \texttt{mfnet}, a layer is a fundamental building block of the neural network
 
 Layers are stacked together to form a complete neural network, with the output of one layer serving as the input to the next layer.  Each layer is responsible for maintaining its own parameters and computing gradients during the backpropagation process.
 
-Each of the layers in \texttt{mfnet} expects the input to be in the form of a matrix with shape $(n_{\text{features}} + 1, n_{\text{samples}})$, where $n_{\text{features}}$ is the number of input features and $n_{\text{samples}}$ is the number of input samples. The first row of this matrix is reserved for a bias term, which is always set to 1.
+% Each of the layers in \mfnet expects the input to be in the form of a matrix with shape $(n_{\text{in}} + 1, m)$, where $n_{\text{in}}$ is the number of input features and $m$ is the number of input samples. The first row of this matrix is reserved for a bias term, which is always set to 1.
 
 \subsection{Linear Layer}
 \subsubsection{Forward pass}
-The Linear layer in \texttt{mfnet} applies a linear transformation to the input data, performing a change in dimensionality from $n_{\text{in\_features}}$ to $n_{\text{out\_features}}$. Mathematically, this can be represented as:
+The Linear layer in \mfnet applies a linear transformation to the input data, performing a change in dimensionality from $\nin$ to $\nout$, where $\nin$ is the number of input features and $\nout$ is the number of output features. Mathematically, this can be represented as:
 \begin{equation}
     y = b + Wx
 \end{equation}
 
 where:
 \begin{itemize}
-    \item $x$ is the $(n_{\text{in\_features}}, 1)$ input vector,
-    \item $W$ is the $(n_{\text{out\_features}}, n_{\text{in\_features}})$ weight matrix,
-    \item $b$ is the $(n_{\text{out\_features}}, 1)$ bias vector, and
-    \item $y$ is the $(n_{\text{out\_features}}, 1)$ output vector.
+    \item $x$ is the \shape{\nin}{1} input vector,
+    \item $W$ is the \shape{\nout}{\nin} weight matrix,
+    \item $b$ is the \shape{\nout}{1} bias vector, and
+    \item $y$ is the \shape{\nout}{1} output vector.
 \end{itemize}
 
 \paragraph{Implementation Details} The actual implementation is a bit different: the first key difference is that the bias term is absorbed inside the weights matrix, and the input vector is augmented with an additional constant value of 1. The layer expects this ``bias feature'' to be already present in the input data, and propagates it to the next layer by adding a row of $\mqty(1 & 0 \cdots 0)$ to the weights matrix. This allows us to rewrite the equation as:
@@ -31,38 +31,34 @@ where:
     \mqty( 1 \\ y ) = \mqty( 1 & 0 \cdots 0 \\ b & W ) \mqty( 1 \\ x )
 \end{equation}
 
-The second key difference is that, instead of feeding one data point at a time to the network and heavily relying on inefficient for loops, we can feed a batch of data points at once, and leverage efficient matrix operations. This means that the input $x$ is actually a matrix $X$ where each column represents a different data point, and the output $y$ is also a matrix $Y$ where each column corresponds to the output for each input data point. The equation then becomes:
+The second key difference is that, instead of feeding one data point at a time to the network and heavily relying on inefficient for loops, we can feed a batch of $m$ data points at once, and leverage efficient matrix operations. This means that the input $x$ is actually a matrix $X$ where each column represents a different data point, and the output $y$ is also a matrix $Y$ where each column corresponds to the output for each input data point. The equation then becomes:
 \begin{equation}
     \mqty( 1 \cdots 1 \\ Y ) = \mqty( 1 & 0 \cdots 0 \\ b & W ) \mqty( 1 \cdots 1 \\ X )
 \end{equation}
 
-Switching to standard backpropagation notation, we can summarize the forward pass of a Linear layer as:
+Switching to the backpropagation notation introduced in \cref{sec:backprop}, we can summarize the forward pass of a Linear layer as:
 \begin{equation}
     Z^{[l]} = W^{[l]} A^{[l - 1]}
 \end{equation}
 where:
 \begin{itemize}
-    \item $A^{[l - 1]}$ is the input of the Linear layer $l$, with $A^{[0]}$ being the input data (shape $(n_{\text{features}} + 1, n_{\text{samples}})$),
-    \item $W^{[l]}$ is the weights matrix of the Linear layer $l$ (shape $(n_{\text{out\_features}} + 1,\\ n_{\text{in\_features}} + 1)$), and
-    \item $Z^{[l]}$ is the output of the Linear layer $l$ (shape $(n_{\text{out\_features}} + 1, n_{\text{samples}})$).
+    \item $A^{[l - 1]}$ is the \shape{(\nin + 1)}{m} input of the Linear layer $l$, with $A^{[0]}$ being the input data,
+    \item $W^{[l]}$ is the \shape{(\nout + 1)}{(\nin + 1)} weights matrix of the Linear layer $l$, and
+    \item $Z^{[l]}$ is the \shape{(\nout + 1)}{m} output of the Linear layer $l$.
 \end{itemize}
-All these Tensors already include all the necessary additions to correctly handle the bias.
+All these Tensors already include the necessary additions to correctly handle the bias.
 
 The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in the backward pass.
 
 \subsubsection{Backward pass}
-The Linear layer's responsibility is to compute the gradients of the loss with respect to its weights during the backward pass. Mathematically, this can be expressed as:
-\begin{equation}
-    \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} A^{[l - 1]T} = \Delta^{[l]} A^{[l - 1]T}
-\end{equation}
-where $\J$ is the loss and $\Delta^{[l]} = \pdv{\J}{Z^{[l]}}$ is the gradient of the loss with respect to the output of the Linear layer $l$.
+The Linear layer's responsibility is to compute the gradients of the loss \wrt its weights during the backward pass and pass backward the gradient of the loss \wrt its input. Mathematically, this can be expressed as:
+\begin{gather}
+    \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} \pdv{Z^{[l]}}{W^{[l]}} = \Delta^{[l]} A^{[l - 1]T}\\
+    \pdv{\J}{A^{[l - 1]}} = \pdv{Z^{[l]}}{A^{[l - 1]}} \pdv{\J}{Z^{[l]}} = W^{[l]T} \Delta^{[l]}
+\end{gather}
+where $\J$ is the loss and $\Delta^{[l]} = \pdv{\J}{Z^{[l]}}$ is the gradient of the loss \wrt the output of the Linear layer $l$.
 
-\paragraph{Implementation Details} The backward method of the Linear layer takes as input $\Delta^{[l]}$ and computes the gradient with respect to the weights $W^{[l]}$. This gradient is then stored in the layer for later use during the optimization step, when it will be used to update the weights.
-
-The Linear layer needs to pass backward its contribution to the gradient of the loss with respect to its input $A^{[l - 1]}$. This is computed as:
-\begin{equation}
-    \pdv{\J}{A^{[l - 1]}} = W^{[l]T} \Delta^{[l]}
-\end{equation}
+\paragraph{Implementation Details} The backward method of the Linear layer takes as input $\Delta^{[l]}$ and computes the gradient \wrt the weights $W^{[l]}$. This gradient is then stored in the layer for later use during the optimization step, when it will be used to update the weights.
 
 \subsection{Activation Layer}
 \subsubsection{Forward pass}
@@ -77,14 +73,14 @@ This step is rendered more complex by the bias feature, which must be preserved 
 
 The Activation layer forward method also stores its input $Z^{[l]}$ for use in the backward pass.
 
-Only two types of activation functions are implemented in \texttt{mfnet}, ReLU and Sigmoid, defined as follows:
+Only two types of activation functions are implemented in \mfnet, ReLU and Sigmoid, defined as follows:
 \begin{itemize}
     \item ReLU: $g(x) = \max(0, x)$
     \item Sigmoid: $g(x) = \flatfrac{1}{(1 + e^{-x})}$
 \end{itemize}
 
 \subsubsection{Backward pass}
-Since the Activation layer does not have any learnable parameters, its backward method is solely responsible for computing the gradient of the loss with respect to its input $Z^{[l]}$:
+Since the Activation layer does not have any learnable parameters, its backward method is solely responsible for computing the gradient of the loss \wrt its input $Z^{[l]}$:
 \begin{equation}
     \pdv{\J}{Z^{[l]}} = \pdv{\J}{A^{[l]}} \odot g'(Z^{[l]})
 \end{equation}
@@ -247,7 +243,7 @@ Now we compute the loss:
 \end{align*}
 
 \subsubsection{Backward pass}
-To start the backward pass, we need to compute the gradient of the loss with respect to the output of the network:
+To start the backward pass, we need to compute the gradient of the loss \wrt the output of the network:
 \begin{equation*}
     \frac{\partial \J}{\partial \hat{Y}} = \frac{2}{m} \left(\hat{Y} - \tilde{Y}\right) = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
@@ -256,7 +252,7 @@ To start the backward pass, we need to compute the gradient of the loss with res
 \end{equation*}
 This is now the input of the backward method of the last layer.
 
-\paragraph{Layer 3 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[3]}$. Since the activation function is the identity, its derivative is 1, and we have:
+\paragraph{Layer 3 (Activation)} The backward method of the Activation layer computes the gradient of the loss \wrt its input $Z^{[3]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
     \Delta^{[3]} = \pdv{\J}{Z^{[3]}} = \pdv{\J}{A^{[3]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
@@ -267,7 +263,7 @@ This is now the input of the backward method of the last layer.
     ]
 \end{equation*}
 
-\paragraph{Layer 3 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[3]}$ and its input $A^{[2]}$:
+\paragraph{Layer 3 (Linear)} The backward method of the Linear layer computes the gradient of the loss \wrt its weights $W^{[3]}$ and its input $A^{[2]}$:
 \begin{gather*}
     \pdv{\J}{W^{[3]}} = \Delta^{[3]} A^{[2]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 \\
@@ -280,7 +276,7 @@ This is now the input of the backward method of the last layer.
     ]
 \end{gather*}
 
-\paragraph{Layer 2 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[2]}$. Since the activation function is the identity, its derivative is 1, and we have:
+\paragraph{Layer 2 (Activation)} The backward method of the Activation layer computes the gradient of the loss \wrt its input $Z^{[2]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
     \Delta^{[2]} = \pdv{\J}{Z^{[2]}} = \pdv{\J}{A^{[2]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
@@ -292,7 +288,7 @@ This is now the input of the backward method of the last layer.
     ]
 \end{equation*}
 
-\paragraph{Layer 2 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[2]}$ and its input $A^{[1]}$:
+\paragraph{Layer 2 (Linear)} The backward method of the Linear layer computes the gradient of the loss \wrt its weights $W^{[2]}$ and its input $A^{[1]}$:
 \begin{gather*}
     \pdv{\J}{W^{[2]}} = \Delta^{[2]} A^{[1]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0 \\
@@ -307,7 +303,7 @@ This is now the input of the backward method of the last layer.
     ]
 \end{gather*}
 
-\paragraph{Layer 1 (Activation)} The backward method of the Activation layer computes the gradient of the loss with respect to its input $Z^{[1]}$. Since the activation function is the identity, its derivative is 1, and we have:
+\paragraph{Layer 1 (Activation)} The backward method of the Activation layer computes the gradient of the loss \wrt its input $Z^{[1]}$. Since the activation function is the identity, its derivative is 1, and we have:
 \begin{equation*}
     \Delta^{[1]} = \pdv{\J}{Z^{[1]}} = \pdv{\J}{A^{[1]}} \odot \mqty[
         \mqty{\color{red} 0 & \color{red} 0 & \color{red} 0 & \color{red} 0} \\
@@ -320,7 +316,7 @@ This is now the input of the backward method of the last layer.
     ]
 \end{equation*}
 
-\paragraph{Layer 1 (Linear)} The backward method of the Linear layer computes the gradient of the loss with respect to its weights $W^{[1]}$ and its input $A^{[0]}$:
+\paragraph{Layer 1 (Linear)} The backward method of the Linear layer computes the gradient of the loss \wrt its weights $W^{[1]}$ and its input $A^{[0]}$:
 \begin{gather*}
     \pdv{\J}{W^{[1]}} = \Delta^{[1]} A^{[0]T} = \frac{1}{4} \mqty[
         \color{red} 0 & \color{red} 0 & \color{red} 0 \\

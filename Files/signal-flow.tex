@@ -1,7 +1,7 @@
 \addcontentsline{toc}{section}{Signal Flow in Neural Networks}
 \section*{Signal Flow in Neural Networks}
 
-A Feedforward Fully Connected Neural Network (FCNN) is a Neural Network architecture where each neuron in one layer is connected to every neuron in the subsequent layer.
+A \ac{FFCNN} is a Neural Network architecture where each neuron in one layer is connected to every neuron in the subsequent layer.
 
 \begin{figure}[h]
     \centering
@@ -34,11 +34,11 @@ A Feedforward Fully Connected Neural Network (FCNN) is a Neural Network architec
     \node[above=0.8,align=center,myred!60!black] at (N\Nnodlen-1.90) {output\\[-0.2em]layer};
 
     \end{tikzpicture}
-    \caption{A Feedforward Fully Connected Neural Network (FCNN).}
+    \caption{\Iac{FFCNN}.}
     \label{fig:fcnn}
 \end{figure}
 
-A FCNN learns by iteratively performing two main steps: the forward pass and the backward pass.
+A \ac{FFCNN} learns by iteratively performing two main steps: the forward pass and the backward pass.
 
 \paragraph{Forward pass} The input data is propagated through the network, layer by layer, to produce an output prediction. This prediction is then compared to the true target values using a loss function, which quantifies the prediction error.
 

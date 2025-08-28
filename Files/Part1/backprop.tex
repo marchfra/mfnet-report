@@ -1,22 +1,29 @@
 \section{Backpropagation} \label{sec:backprop}
-Before diving into the details of the implementation of \texttt{mfnet}, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
+Before diving into the details of the implementation of \mfnet, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
 
 The algorithm is more easily understandable using the indices notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
 
-{\color{red}
-We define $m$ to be the number of samples, $n^{[l]}$ the number of neurons in layer $l$, $a_j^{[l]}$ the activation of neuron $j$ in layer $l$ (with $a_1^{[l]} = 1$), and $W_{jk}^{[l]}$ the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$ and $W_{1k}^{[l]} = \delta_{1k}$).
-}
+The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule.
 
-The goal of the backpropagation algorithm is to compute the derivative of the loss with respect to each weight in the network using the chain rule.
+\paragraph{Indices notation} \label{par:indices_notation}
+We start by defining the following quantities:
+\begin{itemize}
+    \item $L$: the total number of layers in the network;
+    \item $n^{[l]}$: the number of neurons in layer $l$ (with $l = 1$ being the input layer, and $l = L$ being the output layer);
+    \item $z_j^{[l]}$: the pre-activation of neuron $j$ in layer $l$ (with $z_1^{[l]} = 1$). This is the output of the linear transformation in layer $l$ and the input of the activation function;
+    \item $a_j^{[l]}$: the activation of neuron $j$ in layer $l$ (with $a_1^{[l]} = 1$, $a_j^{[0]} = x_j$, and $a_j^{[L]} = \hat{y}_j$). This is the output of layer $l$ and the input of layer $l+1$;
+    \item $W_{jk}^{[l]}$: the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$ and $W_{1k}^{[l]} = \delta_{1k}$);
+    \item $g$: the activation function used in the hidden layers;
+    \item $f$: the activation function used in the output layer.
+\end{itemize}
 
-\paragraph{Indices notation}
 The flow of information through layer $l$ is given by:
 \begin{gather*}
     z_j^{[l]} = \sum_{k=1}^{n^{[l-1]}} W_{jk}^{[l]} a_k^{[l-1]} \\
     a_j^{[l]} = g\left(z_j^{[l]}\right)
 \end{gather*}
 
-The derivative of the loss $\J$ with respect to the weights $W_{jk}^{[l]}$ is computed as:
+The derivative of the loss $\J$ \wrt the weights $W_{jk}^{[l]}$ is computed as:
 \begin{align*}
     \pdv{\J}{W_{jk}^{[l]}} &= \pdv{\J}{z_j^{[l]}} \pdv{z_j^{[l]}}{W_{jk}^{[l]}}\\
     &= \Delta_j^{[l]} \pdv{z_j^{[l]}}{W_{jk}^{[l]}} = \Delta_j^{[l]} a_k^{[l-1]}
@@ -31,12 +38,20 @@ Now, $\Delta_j^{[l]}$ can be expressed in function of $\Delta_j^{[l + 1]}$:
 
 The procedure can be iterated until the last layer $L$ is reached:
 \begin{align*}
-    \Delta_j^{[L]} = \pdv{\J}{z_j^{[L]}} = \pdv{\J}{a_j^{[L]}} \pdv{a_j^{[L]}}{z_j^{[L]}} = \pdv{\J}{\hat{y_j}} f'\left(z_j^{[L]}\right)
+    \Delta_j^{[L]} = \pdv{\J}{z_j^{[L]}} = \pdv{\J}{a_j^{[L]}} \pdv{a_j^{[L]}}{z_j^{[L]}} = \pdv{\J}{\hat{y}_j} f'\left(z_j^{[L]}\right)
 \end{align*}
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta_j^{[l]}$ can be computed, and thus every $\pdv{\J}{W_{jk}^{[l]}}$.
 
 \paragraph{Matrix notation} Matrix notation can be easily derived from the indices notation, being careful with the order of the products and with placing the transposed.
+
+The definitions given in the \nameref{par:indices_notation} paragraph are updated as follows:
+\begin{itemize}
+    \item $m$: the number of samples in the training batch;
+    \item $Z^{[l]}$: the \shape{n^{[l]}}{m} pre-activation of layer $l$;
+    \item $A^{[l]}$: the \shape{n^{[l]}}{m} activation of layer $l$;
+    \item $W^{[l]}$: the \shape{n^{[l]}}{n^{[l-1]}} weight matrix of layer $l$.
+\end{itemize}
 
 The flow of information through layer $l$ is given by:
 \begin{gather*}
@@ -44,7 +59,7 @@ The flow of information through layer $l$ is given by:
     A^{[l]} = g\left(Z^{[l]}\right)
 \end{gather*}
 
-The derivative of the loss $\J$ with respect to the weights $W^{[l]}$ is computed as:
+The derivative of the loss $\J$ \wrt the weights $W^{[l]}$ is computed as:
 \begin{equation*}
     \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} \pdv{Z^{[l]}}{W^{[l]}} = \Delta^{[l]} A^{[l-1]T}
 \end{equation*}

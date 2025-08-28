@@ -1,18 +1,78 @@
 \section{Loss}
 The final ingredient in the training of a neural network is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
 
-Also, as seen in Section \ref{sec:backprop}, the derivative of the loss with respect to the output of the network is needed to start the backpropagation process.
+Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output of the network is needed to start the backpropagation process.
 
-\texttt{mfnet} implements two of the most important loss functions: Mean Squared Error (MSE), used mainly in regression tasks, and Cross Entropy (CE), used in classification tasks.
+\mfnet implements two of the most important loss functions: \ac{MSE}, used mainly in regression tasks, and \ac{CE}, used in classification tasks.
 
-\subsection{Mean Squared Error (MSE)}
-The Mean Squared Error loss function is defined as:
+\subsection{\acl{MSE}}
+The \ac{MSE} loss function is defined as:
 \begin{equation}
-    \J(\hat{y}, y) = \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{y}_i - y_i}^2 = \frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{n_\text{feat}} (\hat{y}_{ij} - y_{ij})^2
+    \J(\hat{Y}, Y) = \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{Y}_i - Y_i}^2 = \frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{n_\text{feat}} (\hat{Y}_{ij} - Y_{ij})^2
 \end{equation}
-where $\hat{y}_i$ is the vector of predicted values for the $i$-th sample, $y_i$ is the vector of true target values for the $i$-th sample and $m$ is the number of samples. It represents the square modulus of the error vector, averaged over all samples.
+where $\hat{Y}_i$ is the vector of predicted values for the $i$-th sample, $Y_i$ is the vector of true target values for the $i$-th sample and $m$ is the number of samples. It represents the square modulus of the error vector, averaged over all samples.
 
-The gradient matrix of the loss with respect to the output of the network is given by:
+The gradient matrix of the loss \wrt the output of the network is given by:
 \begin{equation}
-    \pdv{\J}{\hat{y}} = \frac{2}{m} (\hat{y} - y)
+    \pdv{\J}{\hat{Y}} = \frac{2}{m} (\hat{Y} - Y)
 \end{equation}
+
+\subsection{\acl{CE}}
+\acl{CE} is a measure that determines the similarity between two probability distributions. In the context of neural networks, it is commonly used as a loss function for classification tasks, where the predicted output of the network represents a probability distribution over different classes.
+
+\paragraph{Definition}
+The \ac{CE} loss function is defined as:
+\begin{equation}
+    \J(S, Y) = -\frac{1}{m} \sum_{i=1}^{m} Y_i \odot \log(S_i) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \log(S_{ij})
+\end{equation}
+where $S_{ij}$ is the predicted probability of the $i$-th sample belonging to class $j$, $Y_{ij}$ is the true probability (1 if the sample belongs to class $j$, 0 otherwise), $m$ is the number of samples, and $C$ is the number of classes.
+
+This formula assumes that the predicted outputs $S$ are a probability distribution (i.e., that $0 \leq S_{ij} \leq 1$ and $\sum_{j=1}^{C} S_{ij} = 1\ \forall i$).
+
+Such a distribution can be obtained by applying the softmax function to the raw output logits $Z_{ij}$ of the network. The softmax function is defined as:
+\begin{equation}
+    S_{ij} = \frac{e^{Z_{ij}}}{\sum_{k=1}^{C} e^{Z_{ik}}}
+\end{equation}
+
+To make sure that the \ac{CE} loss has the appropriate input, a softmax is automatically applied before it. The user must not manually insert a softmax layer before the loss (nor does \mfnet define one).
+
+\paragraph{Gradient} The \mono{CELoss} class is responsible for computing the gradient of the \ac{CE} loss \wrt the input logits. This can be broken down in two steps.
+
+\subparagraph{Softmax Gradient} We start by taking the logarithm of the softmax:
+\begin{equation}
+    \log(S_{ij}) = Z_{ij} - \log(\sum_{k=1}^{C} e^{Z_{ik}})
+\end{equation}
+and then its derivative:
+\begin{equation} \label{eq:softmax_grad}
+\begin{split}
+    \pdv{\log(S_{ij})}{Z_{lt}} &= \pdv{Z_{ij}}{Z_{lt}} - \pdv{\log(\sum_{k=1}^{C} e^{Z_{ik}})}{Z_{lt}}\\
+    &= \delta_{ij,lt} - \frac{1}{\sum_{k=1}^{C} e^{Z_{ik}}} \sum_{k=1}^{C} \pdv{e^{Z_{ik}}}{Z_{lt}}\\
+    &= \delta_{ij,lt} - \frac{1}{\sum_{k=1}^{C} e^{Z_{ik}}} \sum_{k=1}^{C} e^{Z_{ik}} \delta_{ik,lt}\\
+    &= \delta_{ij,lt} - \frac{e^{Z_{it}}}{\sum_{k=1}^{C} e^{Z_{ik}}} \delta_{il}\\
+    &= \delta_{ij,lt} - S_{it} \delta_{il}\\
+    &= \delta_{ij,lt} - S_{lt}
+\end{split}
+\end{equation}
+
+The gradient can now be easily obtained by inverting the relation:
+\begin{gather}
+    \pdv{\log(S_{ij})}{Z_{lt}} = \frac{1}{S_{ij}} \pdv{S_{ij}}{Z_{lt}}\nonumber\\
+    \pdv{S_{ij}}{Z_{lt}} = S_{ij} \pdv{\log(S_{ij})}{Z_{lt}} = S_{ij} (\delta_{ij,lt} - S_{lt})
+\end{gather}
+
+\subparagraph{\ac{CE} Gradient} We can now differentiate the \ac{CE} \wrt the input logits $Z_{lt}$:
+\begin{equation}
+\begin{split}
+    \pdv{\J}{Z_{lt}} &= -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \pdv{\log(S_{ij})}{Z_{lt}}\\
+    &\overset{(a)}{=} -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \left(\delta_{ij,lt} - S_{lt} \right)\\
+    &= -\frac{1}{m} \left( Y_{lt} - S_{lt} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \right)\\
+    &\overset{(b)}{=} -\frac{1}{m} \left( Y_{lt} - S_{lt} \sum_{i=1}^{m} 1 \right)\\
+    &= -\frac{1}{m} \left( Y_{lt} - m S_{lt} \right)\\
+    &= S_{lt} - \frac{Y_{lt}}{m}
+\end{split}
+\end{equation}
+where in $(a)$ we used the result from \cref{eq:softmax_grad}, and in $(b)$ we used the fact that $Y_i$ is a one-hot encoded vector.
+
+\paragraph{Implementation details} Since the output logits from the network have the bias row (first row set to all 1s), before doing any calculation in the \mono{CELoss} class we remove this row, both from the logits and from the target labels. To prevent numerical problems arising from $\log(0)$, we also clip the softmax output to a minimum value of $\num{e-100}$.
+
+The \mono{grad} method of the \mono{CELoss} class prepends a row of zeros to the gradient matrix, to match the shape of the input logits.

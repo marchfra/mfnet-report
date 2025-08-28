@@ -7,15 +7,22 @@
 \RequirePackage[a4paper]{geometry}
 \RequirePackage{graphicx} % Required for inserting images
 \RequirePackage[T1]{fontenc}
+
 \RequirePackage{amsmath, amssymb}
+\numberwithin{equation}{section}
+
 \RequirePackage{mathtools}
 \RequirePackage{physics}
 \RequirePackage{siunitx}
+
 \RequirePackage[super]{nth}
+\RequirePackage{acronym}
+
 \RequirePackage[backend=biber,
                 sorting=none]{biblatex}
 \addbibresource{bibliography.bib}
 
+\RequirePackage{xspace}
 
 \RequirePackage{xcolor}
 \definecolor{main_dark}{HTML}{072c3d}
@@ -25,8 +32,6 @@
 \usetikzlibrary{angles, quotes}
 \tikzset{>=latex} % for LaTeX arrow head
 \tikzstyle{vector}=[-stealth,myblue,thick,line cap=round]
-
-\usetikzlibrary{quantikz2}
 
 \renewcommand{\H}{\mathcal{H}}
 \let\temp\phi
@@ -39,6 +44,9 @@
 \hypersetup{colorlinks=true,   
             urlcolor=blue,
             linkcolor=black}
+
+\RequirePackage[capitalise]{cleveref}
+\RequirePackage{nameref}
 
 \RequirePackage{xifthen}
 \RequirePackage{refcount}
@@ -174,7 +182,7 @@
             \vspace{3truecm}
             {\large\sc\@author}
             \vfill
-            \uppercase{{\LARGE\sc\@title}}
+            \uppercase{{\LARGE\@title}}
             % \vfill
             % \centerline{\hbox to 4truecm{\hrulefill}}
             % \medskip

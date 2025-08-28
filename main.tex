@@ -1,18 +1,14 @@
 \documentclass{unitothesis}
 
-% \includeonly{Files/Part1/loss}
+% \includeonly{Files/Part1/layer}
 
-\usepackage{array} % Add this in your preamble if not already present
-\usepackage{multicol} % Add to preamble
-
-\usepackage{amsmath} % for aligned
+% Packages for TikZ NNs
 \usepackage{listofitems} % for \readlist to create arrays
 \usetikzlibrary{arrows.meta} % for arrow size
 \usepackage[outline]{contour} % glow around text
 \contourlength{1.4pt}
 
-% COLORS
-\usepackage{xcolor}
+% COLORS for TikZ NNs
 \colorlet{myred}{red!80!black}
 \colorlet{myblue}{blue!80!black}
 \colorlet{mygreen}{green!60!black}
@@ -21,7 +17,7 @@
 \colorlet{mydarkblue}{blue!40!black}
 \colorlet{mydarkgreen}{green!30!black}
 
-% STYLES
+% STYLES for TikZ NNs
 \tikzset{
     >=latex, % for default LaTeX arrow head
     node/.style={thick,circle,draw=myblue,minimum size=22,inner sep=0.5,outer sep=0.6},
@@ -38,12 +34,23 @@
 }
 \def\nstyle{int(\curr<\Nnodlen?min(2,\curr):3)} % map layer number onto 1, 2, or 3
 
+% Reset section counter after new part
 \usepackage{chngcntr}
 \counterwithin*{section}{part}
 
+% Useful commands for this project
 \newcommand{\J}{\mathcal{J}}
+\newcommand{\mono}[1]{\texttt{#1}}
+\newcommand{\mfnet}{\mono{mfnet}\xspace}
+\newcommand{\shape}[2]{$#1\times #2$}
+\newcommand{\wrt}{with respect to\xspace}
+\newcommand{\nin}{n_\text{in}}
+\newcommand{\nout}{n_\text{out}}
 
-% \usepackage[super]{nth}
+% Acronyms
+\acrodef{FFCNN}{Feedforward Fully Connected Neural Network}
+\acrodef{MSE}{Mean Squared Error}
+\acrodef{CE}{Cross Entropy}
 
 % \usepackage{subcaption}
 
@@ -82,7 +89,7 @@
 % \renewcommand{\dag}[1]{#1^\dagger}
 
 \author{Francesco Marchisotti}
-\title{\centering\texttt{mfnet} -- A simple\\[0.5em] Machine Learning Library}
+\title{\centering\mfnet \sc-- A simple\\[0.5em] Machine Learning Library}
 \aayear{2024/2025}
 
 \begin{supervisors}
@@ -94,7 +101,7 @@
 \maketitlepage
 \thispagestyle{empty}
 \subsection*{\centering Abstract}
-This document presents \texttt{mfnet}, a simple machine learning library developed as a final project for the \href{https://fisica-sc.campusnet.unito.it/do/storicocorsi.pl/Show?_id=curx_2324}{Deep Learning course}. The key feature is the implementation of the backpropagation algorithm, enabling the training of neural networks through gradient descent.
+This document presents \mfnet, a simple machine learning library developed as a final project for the \href{https://fisica-sc.campusnet.unito.it/do/storicocorsi.pl/Show?_id=curx_2324}{Deep Learning course}. The key feature is the implementation of the backpropagation algorithm, enabling the training of neural networks through gradient descent.
 
 The library is then compared with PyTorch on two simple tasks: a regression (on the California Housing dataset) and a classification (on the MNIST dataset).
 \newpage
