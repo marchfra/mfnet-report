@@ -52,6 +52,8 @@
 \RequirePackage{refcount}
 \RequirePackage{xstring}
 
+\usetikzlibrary{quantikz2}  % Without this it doesn't compile
+
 \newcommand{\thesistype}{MSc}
 
 \newcommand\aayear[1]{\renewcommand\@aayear{#1}}

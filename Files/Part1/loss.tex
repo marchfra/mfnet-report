@@ -1,5 +1,5 @@
 \section{Loss}
-The final ingredient in the training of a neural network is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
+The final ingredient in the training of a \acl{NN} is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
 
 Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output of the network is needed to start the backpropagation process.
 
@@ -18,7 +18,7 @@ The gradient matrix of the loss \wrt the output of the network is given by:
 \end{equation}
 
 \subsection{\acl{CE}}
-\acl{CE} is a measure that determines the similarity between two probability distributions. In the context of neural networks, it is commonly used as a loss function for classification tasks, where the predicted output of the network represents a probability distribution over different classes.
+\acl{CE} is a measure that determines the similarity between two probability distributions. In the context of \aclp{NN}, it is commonly used as a loss function for classification tasks, where the predicted output of the network represents a probability distribution over different classes.
 
 \paragraph{Definition}
 The \ac{CE} loss function is defined as:

@@ -1,13 +1,13 @@
 \section{Layer}
 
-In \mfnet, a layer is a fundamental building block of the neural network. Each layer consists of a set of neurons, and it performs a specific transformation on the input data. The two main types of layers implemented in \mfnet are Linear layers and Activation layers.
+In \mfnet, a layer is a fundamental building block of the \acl{NN}. Each layer consists of a set of neurons, and it performs a specific transformation on the input data. The two main types of layers implemented in \mfnet are Linear layers and Activation layers.
 
 % \begin{itemize}
 %     \item \textbf{Linear Layer:} This layer applies a linear transformation to the input data, represented by the equation $y = Ax + b$, where $A$ is the weight matrix, $x$ is the input vector, $b$ is the bias vector, and $y$ is the output vector.
 %     \item \textbf{Activation Layer:} This layer applies a non-linear activation function to the output of the linear layer. Common activation functions include ReLU (Rectified Linear Unit), Sigmoid, and Tanh.
 % \end{itemize}
 
-Layers are stacked together to form a complete neural network, with the output of one layer serving as the input to the next layer.  Each layer is responsible for maintaining its own parameters and computing gradients during the backpropagation process.
+Layers are stacked together to form a complete \acl{NN}, with the output of one layer serving as the input to the next layer.  Each layer is responsible for maintaining its own parameters and computing gradients during the backpropagation process.
 
 % Each of the layers in \mfnet expects the input to be in the form of a matrix with shape $(n_{\text{in}} + 1, m)$, where $n_{\text{in}}$ is the number of input features and $m$ is the number of input samples. The first row of this matrix is reserved for a bias term, which is always set to 1.
 
@@ -62,7 +62,7 @@ where $\J$ is the loss and $\Delta^{[l]} = \pdv{\J}{Z^{[l]}}$ is the gradient of
 
 \subsection{Activation Layer}
 \subsubsection{Forward pass}
-The role of the Activation layer is to apply a non-linear activation function $g$ element-wise to the output of the previous Linear layer. This non-linearity is crucial for the neural network to learn complex patterns in the data.
+The role of the Activation layer is to apply a non-linear activation function $g$ element-wise to the output of the previous Linear layer. This non-linearity is crucial for the \acl{NN} to learn complex patterns in the data.
 
 \paragraph{Implementation Details} The forward method of the Activation layer takes as input the output of the Linear layer $Z^{[l]}$ and applies the activation function element-wise to produce the activated output $A^{[l]}$:
 \begin{equation}
