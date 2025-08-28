@@ -1,0 +1,32 @@
+\section{\acl*{NN}, Optimizer and Dataloader}
+In this section we describe the implementation of more high-level objects that can be built using the building blocks described in the previous sections.
+
+\subsection{\acl*{NN}}
+A \acl{NN} is made up of a sequence of layers, each one transforming the input tensor into an output tensor, and each one feeding into the next.
+
+As far as coding is concerned, it is a very simple object, and only defines three methods: forward, backward and a method that yields an iterator on all the layers' parameters.
+
+The forward method simply calls the forward method of each layer in sequence, passing the output of one layer as input to the next one.
+
+The backward method does the opposite: it calls the backward method of each layer in reverse order, passing the gradient of the loss with respect to the input of each layer as input to the previous layer.
+
+\subsection{Optimizer}
+The optimizer is responsible for updating the parameters of the \acl{NN} during training.
+
+The most basic optimizer is \ac{GD}, which updates the parameters according to the rule:
+\begin{equation}
+    W^{[l]} \gets W^{[l]} - \eta \pdv{\J}{W^{[l]}}
+\end{equation}
+where $\eta$ is the learning rate.
+
+This algorithm in this form suffers from many problems, such as having a big computational overhead and not being able to escape local minima. A more robust version is \ac{SGD}, which updates the parameters using a mini-batch (see \cref{sec:dataloader}) of data instead of the whole dataset. This introduces some noise in the updates, which can help the optimizer to escape local minima.
+
+\paragraph{Implementation details} When training a full \ac{NN} using ReLUs as activation functions, there was often an overflow problem. To help mitigate this, the \mono{Optimizer} class implements gradient clipping, which prevents the gradients from becoming too large by clipping the norm of the gradient tensor to a maximum value provided by the user.
+
+\subsection{Dataloader} \label{sec:dataloader}
+The dataloader is responsible for loading the data in mini-batches and shuffling it at the beginning of each epoch. This is important for \ac{SGD} to work properly, as it helps to reduce the correlation between consecutive mini-batches and improves the convergence of the optimizer.
+
+\paragraph{Implementation details} In addition to creating the mini-batches, the\\\mono{DataLoader} class is also responsible for transforming the data, which is usually stored in a \shape{m}{n_\text{features}} matrix (the design matrix), into a format compatible with the \mfnet library: first, the design matrix is transposed, so that each column represents a data sample and each row represents a feature; then, the bias feature is prepended to the input data as a row of 1s. The same transformations are applied to the target data.
+
+\paragraph{Example}
+For a complete step-by-step example of how the learning process works, please refer to \cref{sec:example}.
