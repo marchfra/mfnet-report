@@ -4,7 +4,7 @@ In this section we describe the implementation of more high-level objects that c
 \subsection{\acl*{NN}}
 A \acl{NN} is made up of a sequence of layers, each one transforming the input tensor into an output tensor, and each one feeding into the next.
 
-As far as coding is concerned, it is a very simple object, and only defines three methods: forward, backward and a method that yields an iterator on all the layers' parameters.
+As far as coding is concerned, it is a very simple object, and only defines three methods: forward, backward and a method that yields an iterator on all the layers' parameters. This last method is used by the optimizer when performing the update step.
 
 The forward method simply calls the forward method of each layer in sequence, passing the output of one layer as input to the next one.
 
@@ -19,7 +19,7 @@ The most basic optimizer is \ac{GD}, which updates the parameters according to t
 \end{equation}
 where $\eta$ is the learning rate.
 
-This algorithm in this form suffers from many problems, such as having a big computational overhead and not being able to escape local minima. A more robust version is \ac{SGD}, which updates the parameters using a mini-batch (see \cref{sec:dataloader}) of data instead of the whole dataset. This introduces some noise in the updates, which can help the optimizer to escape local minima.
+This algorithm in this form suffers from many problems, such as having a big computational overhead and not being able to escape local minima. A more robust version is \ac{SGD}, which updates the parameters using a mini-batch (see \cref{sec:dataloader}) instead of the whole dataset. This introduces some noise in the updates, which can help the optimizer to escape local minima. It also reduces the size of the gradient matrix that needs to be computed, greatly reducing the computational burden.
 
 \paragraph{Implementation details} When training a full \ac{NN} using ReLUs as activation functions, there was often an overflow problem. To help mitigate this, the \mono{Optimizer} class implements gradient clipping, which prevents the gradients from becoming too large by clipping the norm of the gradient tensor to a maximum value provided by the user.
 
