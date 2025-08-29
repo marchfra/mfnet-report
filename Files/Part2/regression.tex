@@ -2,13 +2,13 @@
 
 In order to check that all the implementation of \mfnet is correct, two simple tasks have been performed and compared with \pytorch: a regression task on the California Housing dataset and a classification task on the MNIST dataset.
 
-The two tasks have been implemented as closely as possible in both libraries, using the same architecture, loss function and optimizer. Training hyperparameters such as learning rate and batch size varied slightly between the two frameworks, as using the same values for both resulted in a worse training for one of the two libraries.
+The two tasks have been implemented as closely as possible in both libraries, using the same architecture, loss function and optimizer. Training hyperparameters such as learning rate and batch size were different between the two frameworks, as using the same values for both resulted in a more unstable training for one of the two libraries.
 
 The code for the comparison can be found on \href{https://github.com/marchfra/interface}{GitHub}.
 
 \section{Regression on California Housing}
 
-After the data was loaded and split in training and test sets, feature normalisation was performed on the training set. Using the statistics learned from the training set, the test set was normalized in the same way.
+After the data was loaded and split in training and test sets, feature normalization was performed on the training set. Using the statistics learned from the training set, the test set was normalized in the same way.
 
 The training hyperparameters used for both libraries are shown in the \cref{tab:regr_hyperparams}.
 \begin{table}[hb]
@@ -28,7 +28,7 @@ The training hyperparameters used for both libraries are shown in the \cref{tab:
 
 For each library, three models were trained and compared:
 \begin{enumerate}
-    \item a naive mean predictor that always predicts the mean value of the training set;
+    \item a baseline mean predictor that always predicts the mean value of the training set;
     \item a linear regression model;
     \item a neural network with one hidden layer of 512 neurons and ReLU activation functions. For \mfnet only, maximum gradient norm was set to 5 in order to prevent overflow errors.
 \end{enumerate}
