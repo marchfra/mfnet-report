@@ -1,0 +1,9 @@
+\section{Train}
+
+The \mono{train.py} module implements three convenience functions for training and testing neural networks: \mono{train}, \mono{train\_test\_regression} and\\\mono{train\_test\_classification}.
+
+All three of these functions implement the basic training cycle: for each epoch, iterate over the training dataset in batches, perform a forward pass, compute the loss, perform a backward pass to compute gradients, clip the gradients if the user specified a maximum norm, and update the model parameters using the optimizer. At the end of each epoch, the loss is averaged over all batches and appended to a list, which is returned at the end of training.
+
+While the \mono{train} function stops there, the other two functions also evaluate the model on a test dataset at the end of each epoch, and return both the training and test losses. \mono{train\_test\_classification} also computes the accuracy on the test set.
+
+

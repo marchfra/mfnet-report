@@ -1,6 +1,6 @@
 \documentclass{unitothesis}
 
-% \includeonly{Files/Part1/layer}
+% \includeonly{Files/Part1/train-utils}
 
 % Packages for TikZ NNs
 \usepackage{listofitems} % for \readlist to create arrays
@@ -107,6 +107,8 @@
 This document presents \mfnet, a simple machine learning library developed as a final project for the \href{https://fisica-sc.campusnet.unito.it/do/storicocorsi.pl/Show?_id=curx_2324}{Deep Learning course}. The key feature is the implementation of the backpropagation algorithm, enabling the training of \aclp*{NN} through gradient descent.
 
 The library is then compared with PyTorch on two simple tasks: a regression (on the California Housing dataset) and a classification (on the MNIST dataset).
+
+All the code for this project is available on \href{https://www.github.com/marchfra/mfnet}{GitHub}.
 \newpage
 
 {\hypersetup{linkcolor=black}\tableofcontents}
@@ -119,8 +121,8 @@ The library is then compared with PyTorch on two simple tasks: a regression (on 
 \include{Files/Part1/layer}
 \include{Files/Part1/loss}
 \include{Files/Part1/nn-optim-data}
-% \include{Files/Part1/train}
-% \include{Files/Part1/train-utils}
+\include{Files/Part1/train}
+\include{Files/Part1/train-utils}
 
 
 \appendix
