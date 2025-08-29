@@ -21,7 +21,7 @@ The training hyperparameters used for both libraries are shown in the \cref{tab:
 For each library, two models were trained and compared:
 \begin{enumerate}
     \item a linear classification model;
-    \item a neural network with one hidden layer of 512 neurons and ReLU activation functions.
+    \item a neural network with one hidden layer of 512 neurons and ReLU activation functions. For \mfnet only, maximum gradient norm was set to 5 in order to prevent overflow errors.
 \end{enumerate}
 
 The learning curves and test accuracies for both libraries are shown in \cref{fig:regr_mfnet,fig:regr_pytorch}.
