@@ -5,7 +5,7 @@ The algorithm is more easily understandable using the index notation, but in ord
 
 The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule.
 
-\paragraph{Index notation} \label{par:index_notation}
+\subsection{Index notation} \label{par:index_notation}
 We start by defining the following quantities:
 \begin{itemize}
     \item $L$: the total number of layers in the network;
@@ -43,7 +43,7 @@ The procedure can be iterated until the last layer $L$ is reached:
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta_j^{[l]}$ can be computed, and thus every $\pdv{\J}{W_{jk}^{[l]}}$.
 
-\paragraph{Matrix notation} Matrix notation can be easily derived from the index notation, being careful with the order of the products and with placing the transposes.
+\subsection{Matrix notation} Matrix notation can be easily derived from the index notation, being careful with the order of the products and with placing the transposes.
 
 The definitions given in the \nameref{par:index_notation} paragraph are updated as follows:
 \begin{itemize}
