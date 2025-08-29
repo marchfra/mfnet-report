@@ -12,8 +12,8 @@ Tensors are used throughout \mfnet to represent inputs, outputs, intermediate ac
 
 Canonical shapes (with $m$ being the mini-batch size or the dataset size depending on context):
 \begin{itemize}
-    \item inputs $X \in \mathbb{R}^{(\nin+1)\times m}$ after bias augmentation;
-    \item linear weights $W^{[l]} \in \mathbb{R}^{(\nout+1)\times(\nin+1)}$ with the first row fixed to $[\,1\;0\;\cdots\;0\,]$ (non-learnable);
+    \item inputs $X \in \mathbb{R}^{(n_\text{features}+1)\times m}$ after bias augmentation;
+    \item linear weights $W^{[l]} \in \mathbb{R}^{(\nout+1)\times(\nin+1)}$ with the first row fixed to $\mqty(1 & 0 \cdots 0)$ (non-learnable);
     \item pre-activations and activations $Z^{[l]}, A^{[l]} \in \mathbb{R}^{(\nout+1)\times m}$ (see \cref{sec:backprop,sec:layer});
     \item targets:
     \begin{itemize}

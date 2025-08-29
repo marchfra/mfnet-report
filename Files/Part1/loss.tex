@@ -9,7 +9,7 @@ Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output
 \subsection{\acl{MSE}}
 The \ac{MSE} loss function is defined as:
 \begin{equation}
-    \J(\hat{Y}, Y) = \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{Y}_i - Y_i}^2 = \frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{n_\text{feat}} (\hat{Y}_{ij} - Y_{ij})^2
+    \J(\hat{Y}, Y) = \frac{1}{m} \sum_{i=1}^{m} \norm{\hat{Y}_i - Y_i}_2^2 = \frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{n_\text{feat}} (\hat{Y}_{ij} - Y_{ij})^2
 \end{equation}
 where $\hat{Y}_i$ is the vector of predicted values for the $i$-th sample, $Y_i$ is the vector of true target values for the $i$-th sample and $m$ is the number of samples. It represents the square modulus of the error vector, averaged over all samples.
 
@@ -24,7 +24,7 @@ The gradient matrix of the loss \wrt the output of the network is given by:
 \paragraph{Definition}
 The \ac{CE} loss function is defined as:
 \begin{equation}
-    \J(S, Y) = -\frac{1}{m} \sum_{i=1}^{m} Y_i \odot \log(S_i) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \log(S_{ij})
+    \J(S, Y) = -\frac{1}{m} \sum_{i=1}^{m} \norm{Y_i \odot \log(S_i)}_1 = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \log(S_{ij})
 \end{equation}
 where $S_{ij}$ is the predicted probability of the $i$-th sample belonging to class $j$, $Y_{ij}$ is the true probability (1 if the sample belongs to class $j$, 0 otherwise), $m$ is the number of samples, and $C$ is the number of classes.
 
