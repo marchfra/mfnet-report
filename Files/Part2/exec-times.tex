@@ -1,5 +1,5 @@
 \section*{A note on execution times}
-It is interesting to note the execution times of the training loops for both libraries, shown in \cref{tab:regr_times,tab:class_times}. All training was done on a MacBook Pro 2019 with a 2.3 GHz Quad-Core Intel Core i7 processor, as \mfnet can't run on GPUs.
+The training-loop execution times for both libraries are reported in \cref{tab:regr_times,tab:class_times}. All runs were executed on a MacBook Pro (2019) with a 2.3\,GHz Quad-Core Intel Core i7 CPU. The execution times are taken from the VSCode Jupyter extension and are not the result of an average, but they are the one-shot execution time of the training loop only (without data preprocessing), and as such they represent only an order of magnitude and not precise measurements.
 
 \begin{table}[ht]
 \centering
@@ -7,7 +7,7 @@ It is interesting to note the execution times of the training loops for both lib
     \hline
     Model & \mfnet & \pytorch \\
     \hline
-    Naive Mean Predictor & $\SI{0.0}{\s}$ & $\SI{0.0}{\s}$ \\
+    Baseline Mean Predictor & $\SI{0.0}{\s}$ & $\SI{0.0}{\s}$ \\
     Linear Regression & $\SI{1.1}{\s}$ & $\SI{66.0}{\s}$ \\
     Neural Network & $\SI{274.7}{\s}$ & $\SI{136.8}{\s}$ \\
     \hline
@@ -30,8 +30,15 @@ It is interesting to note the execution times of the training loops for both lib
 \label{tab:class_times}
 \end{table}
 
-With the exception of the \acl{NN} in the regression task, \mfnet is almost always significantly faster than \pytorch. This is probably due to the fact that \pytorch is a highly optimised library but also extremely complex library with GPU support, while \mfnet is a simple implementation.
+On this CPU and with the implementation used, \mfnet was faster in three out of four configurations, while \pytorch was faster on the \acl{NN} regression. These results can be influenced by several factors, including implementation details, number of CPU threads, and batch size.
 
-In the classification task, the batch size was different between the two frameworks, and this contributes to the longer training time of \pytorch.
+\paragraph{Methodology and fairness}
+Timings refer to the training loops only (model forward/backward and updates), excluding data download and preprocessing. For stricter comparability:
+\begin{itemize}
+    \item align batch sizes and learning rates across libraries;
+    \item ensure both libraries use the same number of CPU threads;
+    \item note that gradient clipping was enabled only for \mfnet in some settings, which may change step time;
+    \item report averages over multiple runs (with standard deviation) when possible.
+\end{itemize}
 
-Finally, the models trained were also quite simple, with the \aclp{NN} having at most one hidden layer. This means that the execution times may not fully represent the capabilities of each library when dealing with more complex architectures.
+Differences here should not be generalized to other hardware or larger models: \pytorch benefits from highly optimized kernels and vectorized data pipelines, whereas \mfnet is a simple and instructive, CPU-only implementation.

@@ -1,11 +1,11 @@
 \section{Backpropagation} \label{sec:backprop}
 Before diving into the details of the implementation of \mfnet, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
 
-The algorithm is more easily understandable using the indices notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
+The algorithm is more easily understandable using the index notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
 
 The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule.
 
-\paragraph{Indices notation} \label{par:indices_notation}
+\paragraph{Index notation} \label{par:index_notation}
 We start by defining the following quantities:
 \begin{itemize}
     \item $L$: the total number of layers in the network;
@@ -23,13 +23,13 @@ The flow of information through layer $l$ is given by:
     a_j^{[l]} = g\left(z_j^{[l]}\right)
 \end{gather*}
 
-The derivative of the loss $\J$ \wrt the weights $W_{jk}^{[l]}$ is computed as:
+The derivative of the loss $\J$ \wrt the weight $W_{jk}^{[l]}$ is computed as:
 \begin{align*}
     \pdv{\J}{W_{jk}^{[l]}} &= \pdv{\J}{z_j^{[l]}} \pdv{z_j^{[l]}}{W_{jk}^{[l]}}\\
     &= \Delta_j^{[l]} \pdv{z_j^{[l]}}{W_{jk}^{[l]}} = \Delta_j^{[l]} a_k^{[l-1]}
 \end{align*}
 
-Now, $\Delta_j^{[l]}$ can be expressed in function of $\Delta_j^{[l + 1]}$:
+Now, $\Delta_j^{[l]}$ can be expressed as a function of $\Delta_j^{[l + 1]}$:
 \begin{align*}
     \Delta_j^{[l]} = \pdv{\J}{z_j^{[l]}} &= \pdv{\J}{a_j^{[l]}} \pdv{a_j^{[l]}}{z_j^{[l]}}\\
     &= \left( \sum_{i=1}^{n^{[l + 1]}} \pdv{\J}{z_i^{[l+1]}} \pdv{z_i^{[l+1]}}{a_j^{[l]}} \right) \pdv{a_j^{[l]}}{z_j^{[l]}}\\
@@ -43,9 +43,9 @@ The procedure can be iterated until the last layer $L$ is reached:
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta_j^{[l]}$ can be computed, and thus every $\pdv{\J}{W_{jk}^{[l]}}$.
 
-\paragraph{Matrix notation} Matrix notation can be easily derived from the indices notation, being careful with the order of the products and with placing the transposed.
+\paragraph{Matrix notation} Matrix notation can be easily derived from the index notation, being careful with the order of the products and with placing the transposes.
 
-The definitions given in the \nameref{par:indices_notation} paragraph are updated as follows:
+The definitions given in the \nameref{par:index_notation} paragraph are updated as follows:
 \begin{itemize}
     \item $m$: the number of samples in the training batch;
     \item $Z^{[l]}$: the \shape{n^{[l]}}{m} pre-activation of layer $l$;
@@ -54,29 +54,31 @@ The definitions given in the \nameref{par:indices_notation} paragraph are update
 \end{itemize}
 
 The flow of information through layer $l$ is given by:
-\begin{gather*}
-    Z^{[l]} = W^{[l]} A^{[l-1]}\\
-    A^{[l]} = g\left(Z^{[l]}\right)
-\end{gather*}
+\begin{gather}
+    Z^{[l]} = W^{[l]} A^{[l-1]} \label{eq:lin_forward}\\
+    A^{[l]} = g\left(Z^{[l]}\right) \label{eq:act_forward}
+\end{gather}
 
 The derivative of the loss $\J$ \wrt the weights $W^{[l]}$ is computed as:
-\begin{equation*}
+\begin{equation} \label{eq:weight_grad}
     \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} \pdv{Z^{[l]}}{W^{[l]}} = \Delta^{[l]} A^{[l-1]T}
-\end{equation*}
+\end{equation}
 
-Now, $\Delta^{[l]}$ can be expressed in function of $\Delta^{[l + 1]}$:
-\begin{align*}
+Now, $\Delta^{[l]}$ can be expressed as a function of $\Delta^{[l + 1]}$:
+\begin{equation} \label{eq:delta_recursion}
+\begin{split}
     \Delta^{[l]} = \pdv{\J}{Z^{[l]}} &= \pdv{\J}{A^{[l]}} \odot \pdv{A^{[l]}}{Z^{[l]}}\\
     &= \left(\pdv{Z^{[l+1]}}{A^{[l]}} \pdv{\J}{Z^{[l+1]}} \right) \odot \pdv{A^{[l]}}{Z^{[l]}}\\
     &= \left(W^{[l+1]T} \Delta^{[l+1]} \right) \odot g'\left(Z^{[l]}\right)
-\end{align*}
+\end{split}
+\end{equation}
 where $\odot$ denotes the element-wise (Hadamard) product.
 
 The procedure can be iterated until the last layer $L$ is reached:
-\begin{align*}
+\begin{equation*}
     \Delta^{[L]} = \pdv{\J}{Z^{[L]}} = \pdv{\J}{A^{[L]}} \odot \pdv{A^{[L]}}{Z^{[L]}} = \pdv{\J}{\hat{Y}} \odot f'\left(Z^{[L]}\right)
-\end{align*}
+\end{equation*}
 
-This last term can be computed after the forward pass is completed. By iteration, every $\Delta^{[l]}$ can be computed, and thus every $\pdv{\J}{W^{[l]}}$.
+This last term can be computed after the forward pass is completed. By iteration, every $\Delta^{[l]}$ can be computed using \cref{eq:delta_recursion}, and thus every $\pdv{\J}{W^{[l]}}$.
 
-\paragraph{Note on bias augmentation} In the implementation, tensors always include bias: $A^{[l]}$ includes a leading row of ones and $W^{[l]}$ includes the corresponding bias row and column (see \cref{sec:layer}). The formulas above map directly by treating those rows/columns as fixed: the activation derivative on the bias row is zeroed in backward passes, and the first row of the gradient for logits/layer inputs is handled accordingly so that biases propagate but are not transformed by nonlinearities. This will be explained in greater detail in \cref{sec:layer,sec:loss}, and show in the practical example in \cref{sec:example}.
+\paragraph{Note on bias augmentation} In the implementation, tensors always include bias: $A^{[l]}$ includes a leading row of ones and $W^{[l]}$ includes the corresponding bias row and column (see \cref{sec:layer}). The formulas above map directly by treating those rows/columns as fixed: the activation derivative on the bias row is zeroed in backward passes, and the first row of the gradient for logits/layer inputs is handled accordingly so that biases propagate but are not transformed by nonlinearities. This will be explained in greater detail in \cref{sec:layer,sec:loss}, and shown in the practical example in \cref{sec:example}.

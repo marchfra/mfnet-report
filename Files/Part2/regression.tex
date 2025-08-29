@@ -1,11 +1,3 @@
-\part{Comparison with \pytorch}
-
-In order to check that all the implementation of \mfnet is correct, two simple tasks have been performed and compared with \pytorch: a regression task on the California Housing dataset and a classification task on the MNIST dataset.
-
-The two tasks have been implemented as closely as possible in both libraries, using the same architecture, loss function and optimizer. Training hyperparameters such as learning rate and batch size were different between the two frameworks, as using the same values for both resulted in a more unstable training for one of the two libraries.
-
-The code for the comparison can be found on \href{https://github.com/marchfra/interface}{GitHub}.
-
 \section{Regression on California Housing}
 
 After the data was loaded and split in training and test sets, feature normalization was performed on the training set. Using the statistics learned from the training set, the test set was normalized in the same way.

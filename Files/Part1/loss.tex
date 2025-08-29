@@ -40,9 +40,9 @@ To make sure that the \ac{CE} loss has the appropriate input, a softmax is autom
 \paragraph{Gradient} The \mono{CELoss} class is responsible for computing the gradient of the \ac{CE} loss \wrt the input logits. This can be broken down in two steps.
 
 \subparagraph{Softmax Gradient} We start by taking the logarithm of the softmax:
-\begin{equation}
+\begin{equation*}
     \log(S_{ij}) = Z_{ij} - \log(\sum_{k=1}^{C} e^{Z_{ik}})
-\end{equation}
+\end{equation*}
 and then its derivative:
 \begin{equation} \label{eq:softmax_grad}
 \begin{split}
@@ -55,10 +55,10 @@ and then its derivative:
 \end{equation}
 
 The gradient can now be easily obtained by inverting the relation:
-\begin{gather}
+\begin{gather*}
     \pdv{\log(S_{ij})}{Z_{lt}} = \frac{1}{S_{ij}} \pdv{S_{ij}}{Z_{lt}}\nonumber\\
     \pdv{S_{ij}}{Z_{lt}} = S_{ij} \pdv{\log(S_{ij})}{Z_{lt}} = S_{ij} (\delta_{ij,lt} - S_{it} \delta_{il})
-\end{gather}
+\end{gather*}
 
 \subparagraph{\ac{CE} Gradient} We can now differentiate the \ac{CE} \wrt the input logits $Z_{lt}$:
 \begin{equation}
@@ -75,7 +75,7 @@ where in $(a)$ we used the result from \cref{eq:softmax_grad}, and in $(b)$ we u
 
 \paragraph{Implementation details} Since the output logits from the network have the bias row (first row set to all 1s), before doing any calculation in the \mono{CELoss} class we remove this row, both from the logits and from the target labels. For numerical stability, the softmax is actually computed as:
 \begin{verbatim}
-    e__x = np.exp(logits - np.max(logits, axis=0, keepdims=True))
+    e_x = np.exp(logits - np.max(logits, axis=0, keepdims=True))
     softmax_pred = e_x / np.sum(e_to_the_x, axis=0, keepdims=True)
 \end{verbatim}
 

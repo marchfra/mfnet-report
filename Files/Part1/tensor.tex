@@ -1,13 +1,25 @@
-\part{Implementation of \mfnet}
+\section{Basic Data Structure} \label{sec:tensor}
 
-This first part will describe the implementation details of the \mfnet library.
+The fundamental data structure in \mfnet is the tensor. In this context, a tensor is simply a \mono{numpy} array with a fixed data type of \mono{numpy.float64}. 
 
-All the code for this project is available on \href{https://www.github.com/marchfra/mfnet}{GitHub}.
+Tensors are used throughout \mfnet to represent inputs, outputs, intermediate activations, weights, and gradients within the \acl{NN}.
 
-\section{Basic Data Structure}
+\paragraph{Conventions and shapes} Throughout \mfnet:
+\begin{itemize}
+    \item columns are samples and rows are features/channels;
+    \item tensors are bias-augmented unless stated otherwise: the first row is a constant row of ones that propagates through Linear layers (see \cref{sec:layer}). Activation layers copy this row unchanged, and losses temporarily remove it before computing metrics (see \cref{sec:loss}).
+\end{itemize}
 
-The fundamental data structure in \mfnet is the Tensor. In this context, a Tensor is simply a \mono{numpy}
-array with a fixed data type of \mono{numpy.float64}. 
+Canonical shapes (with $m$ being the mini-batch size or the dataset size depending on context):
+\begin{itemize}
+    \item inputs $X \in \mathbb{R}^{(\nin+1)\times m}$ after bias augmentation;
+    \item linear weights $W^{[l]} \in \mathbb{R}^{(\nout+1)\times(\nin+1)}$ with the first row fixed to $[\,1\;0\;\cdots\;0\,]$ (non-learnable);
+    \item pre-activations and activations $Z^{[l]}, A^{[l]} \in \mathbb{R}^{(\nout+1)\times m}$ (see \cref{sec:backprop,sec:layer});
+    \item targets:
+    \begin{itemize}
+        \item regression: $Y \in \mathbb{R}^{n_\text{targets}\times m}$ (the loss removes/ignores any bias row if present);
+        \item classification: one-hot $Y \in \mathbb{R}^{C\times m}$ with $C$ classes; the loss operates on logits with the bias row removed and restores a zero row in the gradient.
+    \end{itemize}
+\end{itemize}
 
-Tensors are used throughout \mfnet to represent inputs, outputs, intermediate activations, weights, and
-gradients within the \acl{NN}.
+\textbf{Important note:} These conventions apply only to the internal workings of \mfnet. There might be some functions that violate these conventions; every function is thoroughly documented and clearly states the shape of the input it is designed to work with. End users are expected to provide the data in standard \shape{m}{\nin} and \shape{m}{n_\text{targets}} or \shape{m}{C} matrices, and \mfnet handles the translation via the \mono{DataLoader} class (see \cref{sec:dataloader}).

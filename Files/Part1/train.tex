@@ -1,9 +1,23 @@
-\section{Train}
+\section{Training} \label{sec:training}
 
-The \mono{train.py} module implements three convenience functions for training and testing neural networks: \mono{train}, \mono{train\_test\_regression} and\\\mono{train\_test\_classification}.
+The \mono{train.py} module provides three convenience functions for training and evaluating neural networks: \mono{train}, \mono{train\_test\_regression}, and\\\mono{train\_test\_classification}.
 
-All three of these functions implement the basic training cycle: for each epoch, iterate over the training dataset in batches, perform a forward pass, compute the loss, perform a backward pass to compute gradients, clip the gradients if the user specified a maximum norm, and update the model parameters using the optimizer. At the end of each epoch, the loss is averaged over all batches and appended to a list, which is returned at the end of training.
+\paragraph{Overview}
+All functions implement the standard training cycle over epochs:
+\begin{enumerate}
+    \item iterate over the training set in mini-batches (see \cref{sec:dataloader});
+    \item forward pass to obtain predictions;
+    \item compute the loss;
+    \item backward pass to compute gradients;
+    \item optionally clip gradients if a maximum norm is specified (before the optimizer step; see \cref{sec:nn-optim-data});
+    \item update parameters with the optimizer.
+\end{enumerate}
+At the end of each epoch, the loss is averaged over all batches and appended to a history that is returned to the caller.
 
-While the \mono{train} function stops there, the other two functions also evaluate the model on a test dataset at the end of each epoch, and return both the training and test losses. \mono{train\_test\_classification} also computes the accuracy on the test set.
-
-
+\paragraph{APIs and returned metrics}
+\begin{itemize}
+    \item \mono{train}: runs training only and returns the per-epoch training loss history.
+    \item \mono{train\_test\_regression}: trains and evaluates on a test set each epoch; returns training loss and test loss histories.
+    \item \mono{train\_test\_classification}: as above, plus computes test accuracy each epoch using \mono{accuracy} (see \cref{sec:training-utilities}); returns training loss, test loss, and test accuracy histories.
+\end{itemize}
+Evaluation runs a forward pass on the test set without parameter updates.
