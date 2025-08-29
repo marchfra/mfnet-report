@@ -1,0 +1,57 @@
+\section{Classification on MNIST}
+
+After loading the data (already split in training and test sets), the pixel values were normalised to the range [0, 1]. \mfnet also required the data to be transformed in such a way that the library would be able to understand.
+
+The training hyperparameters used for both libraries are shown in the \cref{tab:class_hyperparams}.
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|c|c|}
+    \hline
+    Hyperparameter & \mfnet & \pytorch \\
+    \hline
+    Number of Epochs & 100 & 100 \\
+    Learning Rate $\eta$ & 0.001 & 0.01 \\
+    Batch Size & 1024 & 128 \\
+    \hline
+\end{tabular}
+\caption{Training hyperparameters for classification task.}
+\label{tab:class_hyperparams}
+\end{table}
+
+For each libraries, two models were trained and compared:
+\begin{enumerate}
+    \item a linear classification model;
+    \item a neural network with one hidden layer of 512 neurons and ReLU activation functions.
+\end{enumerate}
+
+The learning curves and test accuracies for both libraries are shown in \cref{fig:regr_mfnet,fig:regr_pytorch}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Images/mfnet_class_loss_acc_100_0.001_1024.png}
+    \caption{Learning curves for classification task on MNIST dataset using \mfnet.}
+    \label{fig:class_mfnet}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Images/pytorch_class_loss_acc_100_0.01_128.png}
+    \caption{Learning curves for classification task on MNIST dataset using \pytorch.}
+    \label{fig:class_pytorch}
+\end{figure}
+
+The accuracy achieved by \pytorch is significantly lower than the one achieved by \mfnet, so the confusion matrices for both libraries are computed and shown in \cref{fig:conf_mfnet,fig:conf_pytorch}. The figures clearly show that, while \mfnet is able to correctly classify almost all the digits, \pytorch struggles with most of them (particularly the digits 0 and 8).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Images/mfnet_class_conf_matrix_100_0.001_1024.png}
+    \caption{Confusion matrix for classification task on MNIST dataset using \mfnet.}
+    \label{fig:conf_mfnet}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.85\linewidth]{Images/pytorch_class_conf_matrix_100_0.01_128.png}
+    \caption{Confusion matrix for classification task on MNIST dataset using \pytorch.}
+    \label{fig:conf_pytorch}
+\end{figure}

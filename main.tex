@@ -1,6 +1,6 @@
 \documentclass{unitothesis}
 
-% \includeonly{Files/Part1/train-utils}
+% \includeonly{}
 
 % Packages for TikZ NNs
 \usepackage{listofitems} % for \readlist to create arrays
@@ -8,7 +8,7 @@
 \usepackage[outline]{contour} % glow around text
 \contourlength{1.4pt}
 
-% COLORS for TikZ NNs
+% Colors for TikZ NNs
 \colorlet{myred}{red!80!black}
 \colorlet{myblue}{blue!80!black}
 \colorlet{mygreen}{green!60!black}
@@ -17,7 +17,7 @@
 \colorlet{mydarkblue}{blue!40!black}
 \colorlet{mydarkgreen}{green!30!black}
 
-% STYLES for TikZ NNs
+% Styles for TikZ NNs
 \tikzset{
     >=latex, % for default LaTeX arrow head
     node/.style={thick,circle,draw=myblue,minimum size=22,inner sep=0.5,outer sep=0.6},
@@ -42,6 +42,7 @@
 \newcommand{\J}{\mathcal{J}}
 \newcommand{\mono}[1]{\texttt{#1}}
 \newcommand{\mfnet}{\mono{mfnet}\xspace}
+\newcommand{\pytorch}{\mono{PyTorch}\xspace}
 \newcommand{\shape}[2]{$#1\times #2$}
 \newcommand{\wrt}{with respect to\xspace}
 \newcommand{\nin}{n_\text{in}}
@@ -54,42 +55,6 @@
 \acrodef{NN}{Neural Network}
 \acrodef{GD}{Gradient Descent}
 \acrodef{SGD}{Stochastic Gradient Descent}
-
-% \usepackage{subcaption}
-
-% \usepackage{listings}
-
-% \definecolor{Blue}{rgb}{0.2,0.2,0.9}
-% \definecolor{Green}{rgb}{0,0.6,0}
-% \definecolor{Gray}{rgb}{0.5,0.5,0.5}
-% \definecolor{Purple}{rgb}{0.58,0,0.82}
-% \definecolor{background}{rgb}{0.98,0.98,0.95}
-
-% \lstdefinestyle{mystyle}{
-%     backgroundcolor=\color{background},
-%     commentstyle=\color{Green},
-%     keywordstyle=\color{Blue},
-%     numberstyle=\tiny\color{Gray},
-%     stringstyle=\color{Purple},
-%     basicstyle=\ttfamily\footnotesize,
-%     basewidth=5.2pt,
-%     breakatwhitespace=false,
-%     extendedchars=true,
-%     breaklines=true,
-%     captionpos=b,
-%     keepspaces=true,
-%     numbers=left,
-%     numbersep=5pt,
-%     showspaces=false,
-%     showstringspaces=false,
-%     showtabs=false,
-%     tabsize=4
-% }
-% \lstset{style=mystyle}
-
-% \newcommand{\up}[1]{\uparrow_{\vu{#1}}}
-% \newcommand{\down}[1]{\downarrow_{\vu{#1}}}
-% \renewcommand{\dag}[1]{#1^\dagger}
 
 \author{Francesco Marchisotti}
 \title{\centering\mfnet \sc-- A simple\\[0.5em] Machine Learning Library}
@@ -107,12 +72,9 @@
 This document presents \mfnet, a simple machine learning library developed as a final project for the \href{https://fisica-sc.campusnet.unito.it/do/storicocorsi.pl/Show?_id=curx_2324}{Deep Learning course}. The key feature is the implementation of the backpropagation algorithm, enabling the training of \aclp*{NN} through gradient descent.
 
 The library is then compared with PyTorch on two simple tasks: a regression (on the California Housing dataset) and a classification (on the MNIST dataset).
-
-All the code for this project is available on \href{https://www.github.com/marchfra/mfnet}{GitHub}.
 \newpage
 
 {\hypersetup{linkcolor=black}\tableofcontents}
-% \newpage
 
 \include{Files/signal-flow}
 
@@ -124,6 +86,9 @@ All the code for this project is available on \href{https://www.github.com/march
 \include{Files/Part1/train}
 \include{Files/Part1/train-utils}
 
+\include{Files/Part2/regression}
+\include{Files/Part2/classification}
+\include{Files/Part2/exec-times}
 
 \appendix
 
@@ -131,18 +96,6 @@ All the code for this project is available on \href{https://www.github.com/march
 \include{Files/Appendix/example}
 
 \end{document}
-
-% Part 1: mfnet implementation
-% \begin{enumerate}
-%     \item information flow in a NN
-%     \item basic data structure: Tensor
-%     \item layer: Linear and Activations
-%     \item Backprop
-%     \item losses: MSE an CE
-%     \item nn, optimizer
-%     \item train helper function
-%     \item trainutils?
-% \end{enumerate}
 
 % Part 2: comparison with pytorch
 % \begin{enumerate}

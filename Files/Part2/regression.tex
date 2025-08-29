@@ -1,0 +1,48 @@
+\part{Comparison with \pytorch}
+
+In order to check that all the implementation of \mfnet is correct, two simple tasks have been performed and compared with \pytorch: a regression task on the California Housing dataset and a classification task on the MNIST dataset.
+
+The two tasks have been implemented as closely as possible in both libraries, using the same architecture, loss function and optimizer. Training hyperparameters such as learning rate and batch size varied slightly between the two frameworks, as using the same values for both resulted in a worse training for one of the two libraries.
+
+\section{Regression on California Housing}
+
+After the data was loaded and split in training and test sets, feature normalisation was performed on the training set. Using the statistics learned from the training set, the test set was normalised in the same way.
+
+The training hyperparameters used for both libraries are shown in the \cref{tab:regr_hyperparams}.
+\begin{table}[hb]
+\centering
+\begin{tabular}{|c|c|c|}
+    \hline
+    Hyperparameter & \mfnet & \pytorch \\
+    \hline
+    Number of Epochs & 500 & 500 \\
+    Learning Rate $\eta$ & 0.001 & 0.001 \\
+    Batch Size & 1024 & 1024 \\
+    \hline
+\end{tabular}
+\caption{Training hyperparameters for regression task.}
+\label{tab:regr_hyperparams}
+\end{table}
+
+For each libraries, three models were trained and compared:
+\begin{enumerate}
+    \item a naive mean predictor that always predicts the mean value of the training set;
+    \item a linear regression model;
+    \item a neural network with one hidden layer of 512 neurons and ReLU activation functions. For \mfnet only, maximum gradient norm was set to 5 in order to prevent overflow errors.
+\end{enumerate}
+
+The learning curves for both libraries are shown in \cref{fig:regr_mfnet,fig:regr_pytorch}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Images/mfnet_regr_mserror_500_0.001_1024.png}
+    \caption{Learning curves for regression task on California Housing dataset using \mfnet.}
+    \label{fig:regr_mfnet}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{Images/pytorch_regr_mserror_500_0.001_1024.png}
+    \caption{Learning curves for regression task on California Housing dataset using \pytorch.}
+    \label{fig:regr_pytorch}
+\end{figure}
