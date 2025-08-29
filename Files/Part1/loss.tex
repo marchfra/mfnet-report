@@ -49,26 +49,25 @@ and then its derivative:
     &= \delta_{ij,lt} - \frac{1}{\sum_{k=1}^{C} e^{Z_{ik}}} \sum_{k=1}^{C} \pdv{e^{Z_{ik}}}{Z_{lt}}\\
     &= \delta_{ij,lt} - \frac{1}{\sum_{k=1}^{C} e^{Z_{ik}}} \sum_{k=1}^{C} e^{Z_{ik}} \delta_{ik,lt}\\
     &= \delta_{ij,lt} - \frac{e^{Z_{it}}}{\sum_{k=1}^{C} e^{Z_{ik}}} \delta_{il}\\
-    &= \delta_{ij,lt} - S_{it} \delta_{il}\\
-    &= \delta_{ij,lt} - S_{lt}
+    &= \delta_{ij,lt} - S_{it} \delta_{il}
 \end{split}
 \end{equation}
 
 The gradient can now be easily obtained by inverting the relation:
 \begin{gather}
     \pdv{\log(S_{ij})}{Z_{lt}} = \frac{1}{S_{ij}} \pdv{S_{ij}}{Z_{lt}}\nonumber\\
-    \pdv{S_{ij}}{Z_{lt}} = S_{ij} \pdv{\log(S_{ij})}{Z_{lt}} = S_{ij} (\delta_{ij,lt} - S_{lt})
+    \pdv{S_{ij}}{Z_{lt}} = S_{ij} \pdv{\log(S_{ij})}{Z_{lt}} = S_{ij} (\delta_{ij,lt} - S_{it} \delta_{il})
 \end{gather}
 
 \subparagraph{\ac{CE} Gradient} We can now differentiate the \ac{CE} \wrt the input logits $Z_{lt}$:
 \begin{equation}
 \begin{split}
     \pdv{\J}{Z_{lt}} &= -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \pdv{\log(S_{ij})}{Z_{lt}}\\
-    &\overset{(a)}{=} -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \left(\delta_{ij,lt} - S_{lt} \right)\\
-    &= -\frac{1}{m} \left( Y_{lt} - S_{lt} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \right)\\
-    &\overset{(b)}{=} -\frac{1}{m} \left( Y_{lt} - S_{lt} \sum_{i=1}^{m} 1 \right)\\
-    &= -\frac{1}{m} \left( Y_{lt} - m S_{lt} \right)\\
-    &= S_{lt} - \frac{Y_{lt}}{m}
+    &\overset{(a)}{=} -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \left(\delta_{ij,lt} - S_{it} \delta_{il} \right)\\
+    &= -\frac{1}{m} \left( Y_{lt} - \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} S_{it} \delta_{il} \right)\\
+    &= -\frac{1}{m} \left( Y_{lt} - S_{lt} \sum_{j=1}^{C} Y_{lj} \right)\\
+    &\overset{(b)}{=} -\frac{1}{m} \left( Y_{lt} - S_{lt} \right)\\
+    &= \frac{S_{lt} - Y_{lt}}{m}
 \end{split}
 \end{equation}
 where in $(a)$ we used the result from \cref{eq:softmax_grad}, and in $(b)$ we used the fact that $Y_i$ is a one-hot encoded vector.
