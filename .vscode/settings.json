@@ -15,6 +15,7 @@
         "-pdf",
         "-auxdir=aux",
         "-outdir=.",
+        "-jobname=mfnet",
         "%DOC%"
       ]
     }
