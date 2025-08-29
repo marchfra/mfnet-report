@@ -30,7 +30,7 @@ It is interesting to note the execution times of the training loops for both lib
 \label{tab:class_times}
 \end{table}
 
-While \mfnet is almost always significantly faster that \pytorch, \pytorch's times are more consistent between models. This is probably due to the fact that \pytorch is a highly optimised library (for GPUs), while \mfnet is a simple implementation: the advantage of \mfnet likely comes from its simplicity, while the more consistent times of \pytorch show that it's a more mature library.
+With the exception of the \acl{NN} in the regression task, \mfnet is almost always significantly faster than \pytorch. This is probably due to the fact that \pytorch is a highly optimised library but also extremely complex library with GPU support, while \mfnet is a simple implementation.
 
 In the classification task, the batch size was different between the two frameworks, and this contributes to the longer training time of \pytorch.
 

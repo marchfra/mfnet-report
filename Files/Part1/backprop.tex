@@ -78,3 +78,5 @@ The procedure can be iterated until the last layer $L$ is reached:
 \end{align*}
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta^{[l]}$ can be computed, and thus every $\pdv{\J}{W^{[l]}}$.
+
+\paragraph{Note on bias augmentation} In the implementation, tensors always include bias: $A^{[l]}$ includes a leading row of ones and $W^{[l]}$ includes the corresponding bias row and column (see \cref{sec:layer}). The formulas above map directly by treating those rows/columns as fixed: the activation derivative on the bias row is zeroed in backward passes, and the first row of the gradient for logits/layer inputs is handled accordingly so that biases propagate but are not transformed by nonlinearities. This will be explained in greater detail in \cref{sec:layer,sec:loss}, and show in the practical example in \cref{sec:example}.

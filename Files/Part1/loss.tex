@@ -1,4 +1,5 @@
-\section{Loss}
+\section{Loss} \label{sec:loss}
+
 The final ingredient in the training of a \acl{NN} is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
 
 Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output of the network is needed to start the backpropagation process.
@@ -72,6 +73,12 @@ The gradient can now be easily obtained by inverting the relation:
 \end{equation}
 where in $(a)$ we used the result from \cref{eq:softmax_grad}, and in $(b)$ we used the fact that $Y_i$ is a one-hot encoded vector.
 
-\paragraph{Implementation details} Since the output logits from the network have the bias row (first row set to all 1s), before doing any calculation in the \mono{CELoss} class we remove this row, both from the logits and from the target labels. To prevent numerical problems arising from $\log(0)$, we also clip the softmax output to a minimum value of $\num{e-100}$.
+\paragraph{Implementation details} Since the output logits from the network have the bias row (first row set to all 1s), before doing any calculation in the \mono{CELoss} class we remove this row, both from the logits and from the target labels. For numerical stability, the softmax is actually computed as:
+\begin{verbatim}
+    e__x = np.exp(logits - np.max(logits, axis=0, keepdims=True))
+    softmax_pred = e_x / np.sum(e_to_the_x, axis=0, keepdims=True)
+\end{verbatim}
+
+To prevent numerical problems arising from $\log(0)$, we also clip the softmax output to a minimum value of $\num{e-100}$.
 
 The \mono{grad} method of the \mono{CELoss} class prepends a row of zeros to the gradient matrix, to match the shape of the input logits.

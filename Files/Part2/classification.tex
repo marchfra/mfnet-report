@@ -1,6 +1,6 @@
 \section{Classification on MNIST}
 
-After loading the data (already split in training and test sets), the pixel values were normalised to the range [0, 1]. \mfnet also required the data to be transformed in such a way that the library would be able to understand.
+After loading the data (already split in training and test sets), the pixel values were normalized to the range [0, 1]. \mfnet also required the data to be transformed in such a way that the library would be able to understand.
 
 The training hyperparameters used for both libraries are shown in the \cref{tab:class_hyperparams}.
 \begin{table}[ht]
@@ -24,7 +24,7 @@ For each library, two models were trained and compared:
     \item a neural network with one hidden layer of 512 neurons and ReLU activation functions. For \mfnet only, maximum gradient norm was set to 5 in order to prevent overflow errors.
 \end{enumerate}
 
-The learning curves and test accuracies for both libraries are shown in \cref{fig:regr_mfnet,fig:regr_pytorch}.
+The learning curves and test accuracies for both libraries are shown in \cref{fig:class_mfnet,fig:class_pytorch}.
 
 \begin{figure}[ht]
     \centering
