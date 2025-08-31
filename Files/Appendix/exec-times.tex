@@ -1,0 +1,44 @@
+\section{Brief note on training times}
+The training-loop execution times for both libraries are reported in \cref{tab:regr_times,tab:class_times}. All runs were executed on a MacBook Pro (2019) with a 2.3\,GHz Quad-Core Intel Core i7 CPU. The execution times are taken from the VSCode Jupyter extension and are not the result of an average, but they are the one-shot execution time of the training loop only (without data preprocessing), and as such they represent only an order of magnitude and not precise measurements.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|c|c|}
+    \hline
+    Model & \mfnet & \pytorch \\
+    \hline
+    Baseline Mean Predictor & $\SI{0.0}{\s}$ & $\SI{0.0}{\s}$ \\
+    Linear Regression & $\SI{1.1}{\s}$ & $\SI{66.0}{\s}$ \\
+    Neural Network & $\SI{274.7}{\s}$ & $\SI{136.8}{\s}$ \\
+    \hline
+\end{tabular}
+\caption{Execution times for regression training loops.}
+\label{tab:regr_times}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|c|c|}
+    \hline
+    Model & \mfnet & \pytorch \\
+    \hline
+    Linear Classification & $\SI{150.6}{\s}$ & $\SI{709.4}{\s}$ \\
+    Neural Network & $\SI{423.7}{\s}$ & $\SI{813.6}{\s}$ \\
+    \hline
+\end{tabular}
+\caption{Execution times for classification training loops.}
+\label{tab:class_times}
+\end{table}
+
+On this CPU and with the implementation used, \mfnet was faster in three out of four configurations, while \pytorch was faster on the \acl{NN} regression. These results can be influenced by several factors, including implementation details, number of CPU threads, and batch size.
+
+\paragraph{Methodology and fairness}
+Timings refer to the training loops only (model forward/backward and updates), excluding data download and preprocessing. For stricter comparability:
+\begin{itemize}
+    \item align batch sizes and learning rates across libraries;
+    \item ensure both libraries use the same number of CPU threads;
+    \item note that gradient clipping was enabled only for \mfnet in some settings, which may change step time;
+    \item report averages over multiple runs (with standard deviation) when possible.
+\end{itemize}
+
+Differences here should not be generalized to other hardware or larger models: \pytorch benefits from highly optimized kernels and vectorized data pipelines, whereas \mfnet is a simple and instructive, CPU-only implementation.
