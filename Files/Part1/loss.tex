@@ -2,9 +2,7 @@
 
 The final ingredient in the training of a \acl{NN} is the loss function. This function measures the error between the predicted output of the network and the true target values. The goal of training is to minimize this loss function by adjusting the weights of the network through backpropagation.
 
-Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output of the network is needed to start the backpropagation process.
-
-\mfnet implements two of the most important loss functions: \ac{MSE}, used mainly in regression tasks, and \ac{CE}, used in classification tasks.
+Also, as seen in \cref{sec:backprop}, the derivative of the loss \wrt the output of the network is needed to start the backpropagation process. \mfnet implements two of the most important loss functions: \ac{MSE}, used mainly in regression tasks, and \ac{CE}, used in classification tasks.
 
 \subsection{\acl{MSE}}
 The \ac{MSE} loss function is defined as:

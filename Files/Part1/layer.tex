@@ -39,9 +39,7 @@ where:
     \item $W^{[l]}$ is the \shape{(\nout + 1)}{(\nin + 1)} weights matrix of the Linear layer $l$, and
     \item $Z^{[l]}$ is the \shape{(\nout + 1)}{m} output of the Linear layer $l$.
 \end{itemize}
-All these tensors already include the necessary additions to correctly handle the bias.
-
-The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in the backward pass.
+All these tensors already include the necessary additions to correctly handle the bias. The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in the backward pass.
 
 \subsubsection{Backward pass}
 The Linear layer's responsibility during the backward pass is to compute the gradients of the loss \wrt its weights (\cref{eq:weight_grad}) and pass backward the gradient of the loss \wrt its input. Mathematically, this can be expressed as:
@@ -64,9 +62,7 @@ The role of the Activation layer is to apply a non-linear activation function $g
 
 This step is rendered more complex by the bias feature, which must be preserved and propagated to the next layer without any modification. Therefore, the activation function is applied only to the rows of $Z^{[l]}$ corresponding to actual features, leaving the first row (the bias feature) unchanged.
 
-The Activation layer forward method also stores its input $Z^{[l]}$ for use in the backward pass.
-
-Only two types of activation functions are implemented in \mfnet, ReLU and Sigmoid, defined as follows:
+The Activation layer forward method also stores its input $Z^{[l]}$ for use in the backward pass. Only two types of activation functions are implemented in \mfnet, ReLU and Sigmoid, defined as follows:
 \begin{itemize}
     \item ReLU: $g(x) = \max(0, x)$
     \item Sigmoid: $g(x) = \flatfrac{1}{(1 + e^{-x})}$
