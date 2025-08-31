@@ -2,8 +2,8 @@
 
 After loading the data (already split in training and test sets), the pixel values were normalized to the range [0, 1]. \mfnet also required the data to be transformed in such a way that the library would be able to understand. This meant converting input data to tensors and one-hot encoding the target labels. For both libraries the $28\times\SI{28}{\pixel}$ images were flattened into 784-dimensional vectors.
 
-The training hyperparameters used for both libraries are shown in the \cref{tab:class_hyperparams}.
-\begin{table}[ht]
+The training hyperparameters used for both libraries are shown in the table below.
+\begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|}
     \hline
@@ -14,8 +14,6 @@ The training hyperparameters used for both libraries are shown in the \cref{tab:
     Batch Size & 1024 & 128 \\
     \hline
 \end{tabular}
-\caption{Training hyperparameters for classification task.}
-\label{tab:class_hyperparams}
 \end{table}
 
 For each library, two models were trained and compared:
@@ -26,6 +24,8 @@ For each library, two models were trained and compared:
 
 The learning curves and test accuracies for both libraries are shown in \cref{fig:class_mfnet,fig:class_pytorch}.
 
+The accuracy achieved by \pytorch is significantly lower than the one achieved by \mfnet, so the confusion matrices for both libraries are computed and shown in \cref{fig:conf_mfnet,fig:conf_pytorch}. The figures clearly show that, while \mfnet is able to correctly classify almost all the digits, \pytorch struggles with most of them (particularly the digits 0 and 8). This is likely due to insufficient exploration of the hyperparameter space, which wasn't carried out since it was outside the scope of this project.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{Images/mfnet_class_loss_acc_100_0.001_1024.png}
@@ -33,14 +33,12 @@ The learning curves and test accuracies for both libraries are shown in \cref{fi
     \label{fig:class_mfnet}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[hb]
     \centering
     \includegraphics[width=0.75\linewidth]{Images/pytorch_class_loss_acc_100_0.01_128.png}
     \caption{Learning curves for classification task on MNIST dataset using \pytorch.}
     \label{fig:class_pytorch}
 \end{figure}
-
-The accuracy achieved by \pytorch is significantly lower than the one achieved by \mfnet, so the confusion matrices for both libraries are computed and shown in \cref{fig:conf_mfnet,fig:conf_pytorch}. The figures clearly show that, while \mfnet is able to correctly classify almost all the digits, \pytorch struggles with most of them (particularly the digits 0 and 8). This is likely due to insufficient exploration of the hyperparameter space, which wasn't carried out since it was outside the scope of this project.
 
 \begin{figure}[ht]
     \centering
@@ -49,7 +47,7 @@ The accuracy achieved by \pytorch is significantly lower than the one achieved b
     \label{fig:conf_mfnet}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[hb]
     \centering
     \includegraphics[width=0.85\linewidth]{Images/pytorch_class_conf_matrix_100_0.01_128.png}
     \caption{Confusion matrix for classification task on MNIST dataset using \pytorch.}
