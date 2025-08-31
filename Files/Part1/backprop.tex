@@ -5,7 +5,7 @@ The algorithm is more easily understandable using the index notation, but in ord
 
 The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule.
 
-\subsection{Index notation} \label{par:index_notation}
+\subsection{Index notation} \label{sec:index_notation}
 We start by defining the following quantities:
 \begin{itemize}
     \item $L$: the total number of layers in the network;
@@ -43,9 +43,10 @@ The procedure can be iterated until the last layer $L$ is reached:
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta_j^{[l]}$ can be computed, and thus every $\pdv{\J}{W_{jk}^{[l]}}$.
 
-\subsection{Matrix notation} Matrix notation can be easily derived from the index notation, being careful with the order of the products and with placing the transposes.
+\subsection{Matrix notation} \label{sec:matrix_notation}
+Matrix notation can be easily derived from the index notation, being careful with the order of the products and with placing the transposes.
 
-The definitions given in the \nameref{par:index_notation} paragraph are updated as follows:
+The definitions given in the \cref{sec:index_notation} are updated as follows:
 \begin{itemize}
     \item $m$: the number of samples in the training batch;
     \item $Z^{[l]}$: the \shape{n^{[l]}}{m} pre-activation of layer $l$;
@@ -81,4 +82,4 @@ The procedure can be iterated until the last layer $L$ is reached:
 
 This last term can be computed after the forward pass is completed. By iteration, every $\Delta^{[l]}$ can be computed using \cref{eq:delta_recursion}, and thus every $\pdv{\J}{W^{[l]}}$.
 
-\paragraph{Note on bias augmentation} In the implementation, tensors always include bias: $A^{[l]}$ includes a leading row of ones and $W^{[l]}$ includes the corresponding bias row and column (see \cref{sec:layer}). The formulas above map directly by treating those rows/columns as fixed: the activation derivative on the bias row is zeroed in backward passes, and the first row of the gradient for logits/layer inputs is handled accordingly so that biases propagate but are not transformed by nonlinearities. This will be explained in greater detail in \cref{sec:layer,sec:loss}, and shown in the practical example in \cref{sec:example}.
+\paragraph{Note on bias augmentation} In the implementation, tensors always include bias: $A^{[l]}$ includes a leading row of ones and $W^{[l]}$ includes the corresponding bias column (see \cref{sec:layer}), in addition to its bias row. The formulas above map directly by treating those rows/columns as fixed: the activation derivative on the bias row is zeroed in backward passes, and the first row of the gradient for logits/layer inputs is handled accordingly so that biases propagate but are not transformed by nonlinearities. This will be explained in greater detail in \cref{sec:layer,sec:loss}, and shown in the practical example in \cref{sec:example}.

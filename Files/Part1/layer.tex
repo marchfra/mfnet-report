@@ -42,7 +42,7 @@ where:
 All these tensors already include the necessary additions to correctly handle the bias. The Linear layer forward method also stores its input $A^{[l - 1]}$ for use in the backward pass.
 
 \subsubsection{Backward pass}
-The Linear layer's responsibility during the backward pass is to compute the gradients of the loss \wrt its weights (\cref{eq:weight_grad}) and pass backward the gradient of the loss \wrt its input. Mathematically, this can be expressed as:
+The Linear layer's responsibility during the backward pass is to compute the gradients of the loss \wrt its weights (using \cref{eq:weight_grad}) and pass backward the gradient of the loss \wrt its input. Mathematically, this can be expressed as:
 \begin{gather*}
     \pdv{\J}{W^{[l]}} = \pdv{\J}{Z^{[l]}} \pdv{Z^{[l]}}{W^{[l]}} = \Delta^{[l]} A^{[l - 1]T}\\
     \pdv{\J}{A^{[l - 1]}} = \pdv{Z^{[l]}}{A^{[l - 1]}} \pdv{\J}{Z^{[l]}} = W^{[l]T} \Delta^{[l]}
@@ -53,7 +53,7 @@ where $\J$ is the loss and $\Delta^{[l]} = \pdv{\J}{Z^{[l]}}$ is the gradient of
 
 \subsection{Activation layer}
 \subsubsection{Forward pass}
-The role of the Activation layer is to apply a non-linear activation function $g$ element-wise to the output of the previous Linear layer.% This non-linearity is crucial for the \acl{NN} to learn complex patterns in the data.
+The role of the Activation layer is to apply a non-linear activation function $g$ element-wise to the output of the previous Linear layer.
 
 \paragraph{Implementation Details} The forward method of the Activation layer takes as input the output of the Linear layer $Z^{[l]}$ and applies the activation function element-wise to produce the activated output $A^{[l]}$ as in \cref{eq:act_forward}:
 \begin{equation*}
@@ -73,6 +73,6 @@ Since the Activation layer does not have any learnable parameters, its backward 
 \begin{equation*}
     \pdv{\J}{Z^{[l]}} = \pdv{\J}{A^{[l]}} \odot g'(Z^{[l]})
 \end{equation*}
-where $g'$ is the derivative of the activation function and $\odot$ denotes element-wise multiplication (Hadamard product).
+where $g'$ is the derivative of the activation function.
 
-\paragraph{Implementation Details} The backward method of the Activation layer takes as input $\pdv{\J}{A^{[l]}}$ and computes $\pdv{\J}{Z^{[l]}}$. Similar to the forward pass, the bias feature must be preserved during this computation. Therefore, the derivative of the activation function is applied only to the rows corresponding to actual features, setting the first row (the bias feature) to zero. This ensures that the first row of the weight matrix of the previous Linear layer does not get updated during the optimization step, and therefore that the bias feature gets correctly propagated forward through the network.
+\paragraph{Implementation Details} The backward method of the Activation layer takes as input $\pdv{\J}{A^{[l]}}$ and computes $\pdv{\J}{Z^{[l]}}$. Similar to the forward pass, the bias feature must be preserved during this computation. Therefore, the derivative of the activation function is applied only to the rows corresponding to actual features, setting the bias row to zero. This ensures that the first row of the weight matrix of the previous Linear layer does not get updated during the optimization step, and therefore that the bias feature gets correctly propagated forward through the network.
