@@ -71,9 +71,12 @@
 \maketitlepage
 \thispagestyle{empty}
 \subsection*{\centering Abstract}
-This document presents \mfnet, a simple machine learning library developed as a final project for the Deep Learning course. The key feature is the implementation of the backpropagation algorithm, enabling the training of \aclp*{NN} through gradient descent.
+Modern machine learning libraries such as \pytorch and \mono{TensorFlow} are widely used in both academia and industry. They are highly optimized, feature-rich, and provide extensive support for various machine learning tasks. In addition to their extensive features, these libraries are designed to efficiently leverage modern GPUs to significantly speed up training and inference for large-scale machine learning models.
 
-The library is then compared with \pytorch on two simple tasks: a regression on the California Housing dataset and a classification on the MNIST dataset.
+To gain a deeper understanding of the workings of such libraries, \mfnet was developed as a simplified neural network library from scratch. The main objective was to implement a functional framework, focusing on the core concept of backpropagation.
+
+The effectiveness of the library was validated by analyzing learning curves on two benchmark tasks: regression and classification. The results demonstrate that \mfnet successfully learns and generalizes, confirming the correctness of its implementation.
+
 \newpage
 
 {\hypersetup{linkcolor=black}\tableofcontents}
