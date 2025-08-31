@@ -37,6 +37,7 @@
 % Reset section counter after new part
 \usepackage{chngcntr}
 \counterwithin*{section}{part}
+\setcounter{tocdepth}{1} % hide subsections and lower from TOC
 
 % Useful commands for this project
 \newcommand{\J}{\mathcal{J}}
@@ -82,44 +83,11 @@ The effectiveness of the library was validated by analyzing learning curves on t
 {\hypersetup{linkcolor=black}\tableofcontents}
 
 \include{Files/signal-flow}
-
-\part{Implementation of \mfnet}
-
-This first part describes the implementation details of the \mfnet library.
-
-All the code for this project is available on \href{https://www.github.com/marchfra/mfnet}{GitHub}.
-
-\include{Files/Part1/tensor}
-\include{Files/Part1/backprop}
-\include{Files/Part1/layer}
-\include{Files/Part1/loss}
-\include{Files/Part1/nn-optim-data}
-\include{Files/Part1/train-utils}
-\include{Files/Part1/train}
-
-\part{Comparison with \pytorch}
-
-In order to check that all the implementation of \mfnet is correct, two simple tasks have been performed and compared with \pytorch: a regression task on the California Housing dataset and a classification task on the MNIST dataset.
-
-The two tasks have been implemented as closely as possible in both libraries, using the same architecture, loss function and optimizer. Training hyperparameters such as learning rate and batch size were different between the two frameworks, as using the same values for both resulted in a more unstable training for one of the two libraries.
-
-Note that the goal of the project was not to outperform \pytorch, but rather to compare the training process of \mfnet with that of a production machine learning framework and check that the overall behavior is consistent with the expectations of a functioning library.
-
-The code for the comparison can be found on \href{https://github.com/marchfra/interface}{GitHub}.
-
-\include{Files/Part2/regression}
-\include{Files/Part2/classification}
-\include{Files/Part2/exec-times}
+\include{Files/part-1-implementation}
+\include{Files/part-2-comparison}
 
 \appendix
-
-\newpage
+\include{Files/Appendix/exec-times}
 \include{Files/Appendix/example}
 
 \end{document}
-
-% Part 2: comparison with pytorch
-% \begin{enumerate}
-%     \item Regression task
-%     \item Classification task
-% \end{enumerate}
