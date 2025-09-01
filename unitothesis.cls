@@ -25,8 +25,11 @@
 
 \RequirePackage{xspace}
 
-\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage{xcolor}
 \definecolor{main_dark}{HTML}{072c3d}
+\definecolor{MidnightBlue}{HTML}{006795}
+\definecolor{OliveGreen}{HTML}{3C8031}
+\definecolor{RoyalBlue}{HTML}{0071BC}
 
 \RequirePackage{tikz}
 \RequirePackage{tikz-3dplot}
