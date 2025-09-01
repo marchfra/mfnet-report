@@ -24,7 +24,7 @@
 
 \RequirePackage{xspace}
 
-\RequirePackage{xcolor}
+\RequirePackage[dvipsnames]{xcolor}
 \definecolor{main_dark}{HTML}{072c3d}
 
 \RequirePackage{tikz}
@@ -42,8 +42,9 @@
 
 \RequirePackage{hyperref}
 \hypersetup{colorlinks=true,   
-            urlcolor=blue,
-            linkcolor=black}
+            urlcolor=MidnightBlue,
+            citecolor=OliveGreen,
+            linkcolor=MidnightBlue}
 
 \RequirePackage[capitalise]{cleveref}
 \RequirePackage{nameref}
