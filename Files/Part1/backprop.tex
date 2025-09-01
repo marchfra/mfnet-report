@@ -1,18 +1,15 @@
 \section{Backpropagation} \label{sec:backprop}
-Before diving into the details of the implementation of \mfnet, it's necessary to understand the algorithm at the core of the learning process: backpropagation.
+Before diving into the details of the implementation of \mfnet, it's necessary to understand the algorithm at the core of the learning process: backpropagation. The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule. The algorithm is more easily understandable using the index notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
 
-The algorithm is more easily understandable using the index notation, but in order to implement it in code, we need to express it in matrix form, so both formulations will be shown.
-
-The goal of the backpropagation algorithm is to compute the derivative of the loss \wrt each weight in the network using the chain rule.
 
 \subsection{Index notation} \label{sec:index_notation}
 We start by defining the following quantities:
 \begin{itemize}
     \item $L$: the total number of layers in the network;
     \item $n^{[l]}$: the number of neurons in layer $l$ (with $l = 1$ being the input layer, and $l = L$ being the output layer);
-    \item $z_j^{[l]}$: the pre-activation of neuron $j$ in layer $l$ (with $z_1^{[l]} = 1$). This is the output of the linear transformation in layer $l$ and the input of the activation function;
-    \item $a_j^{[l]}$: the activation of neuron $j$ in layer $l$ (with $a_1^{[l]} = 1$, $a_j^{[0]} = x_j$, and $a_j^{[L]} = \hat{y}_j$). This is the output of layer $l$ and the input of layer $l+1$;
-    \item $W_{jk}^{[l]}$: the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$ and $W_{1k}^{[l]} = \delta_{1k}$);
+    \item $z_j^{[l]}$: the pre-activation of neuron $j$ in layer $l$. This is the output of the linear transformation in layer $l$ and the input of the activation function;
+    \item $a_j^{[l]}$: the activation of neuron $j$ in layer $l$ (with $a_j^{[0]} = x_j$, and $a_j^{[L]} = \hat{y}_j$). This is the output of layer $l$ and the input of layer $l+1$;
+    \item $W_{jk}^{[l]}$: the weight connecting neuron $k$ in layer $l-1$ to neuron $j$ in layer $l$ (with $W_{j1}^{[l]} = b_j^{[l]}$);
     \item $g$: the activation function used in the hidden layers;
     \item $f$: the activation function used in the output layer.
 \end{itemize}

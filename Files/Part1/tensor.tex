@@ -4,7 +4,7 @@ The fundamental data structure in \mfnet is the tensor. In this context, a tenso
 
 \paragraph{Conventions and shapes} Throughout \mfnet:
 \begin{itemize}
-    \item columns are samples and rows are features/channels;
+    \item columns are samples and rows are features/classes;
     \item tensors are bias-augmented unless stated otherwise: the first row is a constant row of ones that propagates through Linear layers (see \cref{sec:layer}). Activation layers copy this row unchanged, and losses temporarily remove it before computing metrics (see \cref{sec:loss}).
 \end{itemize}
 

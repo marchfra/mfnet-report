@@ -19,7 +19,7 @@ The most basic optimizer is \ac{GD}, which updates the parameters according to t
 \end{equation}
 where $\eta$ is the learning rate.
 
-This algorithm in this form suffers from many problems, such as having a big computational overhead and not being able to escape local minima. A more robust version is \ac{SGD}, which updates the parameters using a mini-batch (see \cref{sec:dataloader}) instead of the whole dataset. This introduces some stochastic noise in the updates, which can help the optimizer to better explore the space. It also reduces the size of the gradient matrix that needs to be computed, greatly reducing the computational burden.
+The algorithm in this form suffers from many problems, such as having a big computational overhead and not being able to escape local minima. A more robust version is \ac{SGD}, which updates the parameters using a mini-batch (see \cref{sec:dataloader}) instead of the whole dataset. This introduces some stochastic noise in the updates, which can help the optimizer to better explore the space. It also reduces the size of the gradient matrix that needs to be computed, greatly reducing the computational burden.
 
 \paragraph{Implementation details} When training a full \ac{NN} using ReLUs as activation functions, there was often an overflow problem. To help mitigate this, the \mono{Optimizer} class implements gradient clipping, which prevents the gradients from becoming too large by clipping the norm of the gradient tensor to a maximum value provided by the user.
 

@@ -33,7 +33,10 @@ Such a distribution can be obtained by applying the softmax function to the raw 
     S_{ij} = \frac{e^{Z_{ij}}}{\sum_{k=1}^{C} e^{Z_{ik}}}
 \end{equation}
 
-To make sure that the \ac{CE} loss has the appropriate input, a softmax is automatically applied before it. The user must not manually insert a softmax layer before the loss (nor does \mfnet define one).
+To make sure that the \ac{CE} loss has the appropriate input, a softmax is automatically applied before it. The user must not manually insert a softmax layer before the loss (nor does \mfnet define one). The actual formula for the \ac{CE} loss used in \mfnet is therefore:
+\begin{equation}
+    \J(Z, Y) = -\frac{1}{m} \sum_{i=1}^{m} \sum_{j=1}^{C} Y_{ij} \log(\frac{e^{Z_{ij}}}{\sum_{k=1}^{C} e^{Z_{ik}}})
+\end{equation}
 
 \paragraph{Gradient} The \mono{CELoss} class is responsible for computing the gradient of the \ac{CE} loss \wrt the input logits. This can be broken down in two steps.
 

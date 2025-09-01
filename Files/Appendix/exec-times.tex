@@ -1,3 +1,7 @@
+\addtocontents{toc}{\protect\vskip35pt}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
 \section{Brief note on training times}
 The training-loop execution times for both libraries are reported in \cref{tab:regr_times,tab:class_times}. All runs were executed on a MacBook Pro (2019) with a 2.3\,GHz Quad-Core Intel Core i7 CPU. The execution times are taken from the VSCode Jupyter extension and are not the result of an average, but they are the one-shot execution time of the training loop only (without data preprocessing), and as such they represent only an order of magnitude and not precise measurements.
 
@@ -41,4 +45,4 @@ Timings refer to the training loops only (model forward/backward and updates), e
     \item report averages over multiple runs (with standard deviation) when possible.
 \end{itemize}
 
-Differences here should not be generalized to other hardware or larger models: \pytorch benefits from highly optimized kernels and vectorized data pipelines, whereas \mfnet is a simple and instructive, CPU-only implementation.
+Differences here should not be generalized to other hardware or larger models: \pytorch benefits from highly optimized kernels and vectorized data pipelines, whereas \mfnet is a simple and instructive CPU-only implementation.

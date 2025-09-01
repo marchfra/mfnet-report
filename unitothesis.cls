@@ -7,6 +7,7 @@
 \RequirePackage[a4paper]{geometry}
 \RequirePackage{graphicx} % Required for inserting images
 \RequirePackage[T1]{fontenc}
+\RequirePackage{appendix}
 
 \RequirePackage{amsmath, amssymb}
 \numberwithin{equation}{section}
@@ -41,7 +42,7 @@
 \renewcommand{\eqref}[1]{(\ref{#1})}
 
 \RequirePackage{hyperref}
-\hypersetup{colorlinks=true,   
+\hypersetup{colorlinks=true,
             urlcolor=MidnightBlue,
             citecolor=OliveGreen,
             linkcolor=MidnightBlue}
